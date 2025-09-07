@@ -64,7 +64,7 @@ const {
 
 <style lang="scss" module>
 body {
-	background-color: var(--color-background-light);
+	background-color: var(--color-background-dark);
 }
 
 .container {

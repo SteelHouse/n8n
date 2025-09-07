@@ -4,27 +4,27 @@
 // Tokens should be used instead in components and other UI elements
 
 @mixin primitives {
-	--h-gray: 220;
+	--h-gray: 200;
 
-	// Gray
-	--p-gray-820: hsl(var(--h-gray), 1%, 18%);
-	--p-gray-800: hsl(var(--h-gray), 1%, 20%);
-	--p-gray-780: hsl(var(--h-gray), 1%, 22%);
-	--p-gray-740: hsl(var(--h-gray), 2%, 26%);
-	--p-gray-710: hsl(var(--h-gray), 2%, 29%);
-	--p-gray-670: hsl(var(--h-gray), 2%, 33%);
-	--p-gray-540: hsl(var(--h-gray), 4%, 46%);
-	--p-gray-490: hsl(var(--h-gray), 3%, 51%);
-	--p-gray-420: hsl(var(--h-gray), 4%, 58%);
-	--p-gray-320: hsl(var(--h-gray), 10%, 68%);
-	--p-gray-200: hsl(var(--h-gray), 18%, 80%);
-	--p-gray-120: hsl(var(--h-gray), 25%, 88%);
-	--p-gray-070: hsl(var(--h-gray), 32%, 93%);
-	--p-gray-040: hsl(var(--h-gray), 40%, 96%);
-	--p-gray-030: hsl(var(--h-gray), 43%, 97%);
-	--p-gray-025: hsl(var(--h-gray), 50%, 97.5%);
-	--p-gray-010: hsl(var(--h-gray), 50%, 99%);
-	--p-white: hsl(var(--h-gray), 50%, 100%);
+	// Glass morphism dark theme colors
+	--p-gray-820: #070a0d;  // Base dark background (rgba(7,10,13,1))
+	--p-gray-800: #0f1419;  // Slightly lighter dark
+	--p-gray-780: #181f25;  // Dark card backgrounds (rgba(24,31,37,1))
+	--p-gray-740: #252932;  // Component backgrounds
+	--p-gray-710: #2d323a;  // Elevated backgrounds
+	--p-gray-670: #363c45;  // Glass container base
+	--p-gray-540: #434a54;  // Interactive backgrounds
+	--p-gray-490: #525862;  // Hover states
+	--p-gray-420: #626970;  // Borders and muted elements
+	--p-gray-320: #757c85;  // Secondary text
+	--p-gray-200: #8b9199;  // Primary text
+	--p-gray-120: #a8aeb6;  // Light text
+	--p-gray-070: #c5c9d0;  // Very light text
+	--p-gray-040: #dde0e4;  // Near white text
+	--p-gray-030: #e8eaed;  // Almost white
+	--p-gray-025: #f2f3f4;  // Light backgrounds
+	--p-gray-010: #f8f9fa;  // Very light backgrounds
+	--p-white: #ffffff;     // Pure white
 
 	// Gray alpha
 	--p-gray-320-a-010: hsla(var(--h-gray), 10%, 68%, 0.1);
@@ -39,21 +39,21 @@
 	--p-white-a-010: hsla(var(--h-gray), 50%, 100%, 0.1);
 
 	// Primary color
-	--h-primary: 7;
-	--s-primary: 100%;
-	--l-primary: 68%;
+	--h-primary: 169;
+	--s-primary: 77%;
+	--l-primary: 45%;
 
-	--p-color-primary-420: hsl(7, 85%, 58%);
-	--p-color-primary-320: hsl(7, 100%, 68%); // Base
-	--p-color-primary-220: hsl(7, 100%, 78%);
-	--p-color-primary-120: hsl(7, 100%, 88%);
-	--p-color-primary-070: hsl(7, 100%, 93%);
-	--p-color-primary-050: hsl(7, 100%, 95%);
-	--p-color-primary-030: hsl(7, 100%, 98%);
+	--p-color-primary-420: hsl(169, 77%, 35%);
+	--p-color-primary-320: hsl(169, 77%, 45%); // Base
+	--p-color-primary-220: hsl(169, 77%, 55%);
+	--p-color-primary-120: hsl(169, 77%, 65%);
+	--p-color-primary-070: hsl(169, 77%, 75%);
+	--p-color-primary-050: hsl(169, 77%, 85%);
+	--p-color-primary-030: hsl(169, 77%, 95%);
 
-	--p-color-primary-320-a-010: hsla(7, 100%, 68%, 0.1);
-	--p-color-primary-320-a-035: hsla(7, 100%, 68%, 0.35);
-	--p-color-primary-320-a-050: hsla(7, 100%, 68%, 0.5);
+	--p-color-primary-320-a-010: hsla(169, 77%, 45%, 0.1);
+	--p-color-primary-320-a-035: hsla(169, 77%, 45%, 0.35);
+	--p-color-primary-320-a-050: hsla(169, 77%, 45%, 0.5);
 
 	// Secondary color
 	--p-color-secondary-720: hsl(247, 24%, 28%);

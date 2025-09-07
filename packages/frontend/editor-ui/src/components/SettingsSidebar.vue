@@ -6,7 +6,6 @@ import type { IMenuItem } from '@n8n/design-system';
 import { useUIStore } from '@/stores/ui.store';
 import { useSettingsStore } from '@/stores/settings.store';
 import { useRootStore } from '@n8n/stores/useRootStore';
-import { hasPermission } from '@/utils/rbac/permissions';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from '@n8n/i18n';
 
@@ -63,7 +62,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 			icon: 'vault',
 			label: i18n.baseText('settings.externalSecrets.title'),
 			position: 'top',
-			available: canUserAccessRouteByName(VIEWS.EXTERNAL_SECRETS_SETTINGS),
+			available: false, // Hidden - Enterprise feature
 			route: { to: { name: VIEWS.EXTERNAL_SECRETS_SETTINGS } },
 		},
 
@@ -72,7 +71,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 			icon: 'git-branch',
 			label: i18n.baseText('settings.sourceControl.title'),
 			position: 'top',
-			available: canUserAccessRouteByName(VIEWS.SOURCE_CONTROL),
+			available: false, // Hidden - Enterprise feature
 			route: { to: { name: VIEWS.SOURCE_CONTROL } },
 		},
 		{
@@ -80,7 +79,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 			icon: 'user-lock',
 			label: i18n.baseText('settings.sso'),
 			position: 'top',
-			available: canUserAccessRouteByName(VIEWS.SSO_SETTINGS),
+			available: false, // Hidden - Enterprise feature
 			route: { to: { name: VIEWS.SSO_SETTINGS } },
 		},
 		{
@@ -88,7 +87,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 			icon: 'network',
 			label: i18n.baseText('settings.ldap'),
 			position: 'top',
-			available: canUserAccessRouteByName(VIEWS.LDAP_SETTINGS),
+			available: false, // Hidden - Enterprise feature
 			route: { to: { name: VIEWS.LDAP_SETTINGS } },
 		},
 		{
@@ -96,9 +95,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 			icon: 'waypoints',
 			label: i18n.baseText('mainSidebar.workersView'),
 			position: 'top',
-			available:
-				settingsStore.isQueueModeEnabled &&
-				hasPermission(['rbac'], { rbac: { scope: 'workersView:manage' } }),
+			available: false, // Hidden - Enterprise feature
 			route: { to: { name: VIEWS.WORKER_VIEW } },
 		},
 	];
@@ -108,7 +105,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 		icon: 'log-in',
 		label: i18n.baseText('settings.log-streaming'),
 		position: 'top',
-		available: canUserAccessRouteByName(VIEWS.LOG_STREAMING_SETTINGS),
+		available: false, // Hidden - Enterprise feature
 		route: { to: { name: VIEWS.LOG_STREAMING_SETTINGS } },
 	});
 
@@ -151,7 +148,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 .container {
 	min-width: $sidebar-expanded-width;
 	height: 100%;
-	background-color: var(--color-background-xlight);
+	background: var(--color-glass-container-40);
 	border-right: var(--border-base);
 	position: relative;
 	overflow: auto;

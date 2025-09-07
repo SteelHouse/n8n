@@ -393,6 +393,19 @@ export abstract class NodeExecutionContext implements Omit<FunctionsBase, 'getCr
 		fallbackValue?: any,
 		options?: IGetNodeParameterOptions,
 	): NodeParameterValueType | object {
+		// Validate context integrity for parallel execution safety
+		if (!this.workflow || !this.node) {
+			throw new ApplicationError('NodeExecutionContext corrupted - missing workflow or node', {
+				extra: { 
+					parameterName,
+					hasWorkflow: !!this.workflow,
+					hasNode: !!this.node,
+					nodeName: this.node?.name,
+					nodeType: this.node?.type
+				}
+			});
+		}
+
 		const { workflow, node, mode, runExecutionData, runIndex, connectionInputData, executeData } =
 			this;
 
@@ -400,10 +413,6 @@ export abstract class NodeExecutionContext implements Omit<FunctionsBase, 'getCr
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const value = get(node.parameters, parameterName, fallbackValue);
-
-		if (value === undefined) {
-			throw new ApplicationError('Could not get parameter', { extra: { parameterName } });
-		}
 
 		if (options?.rawExpressions) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return

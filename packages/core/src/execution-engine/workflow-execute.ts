@@ -1008,6 +1008,62 @@ export class WorkflowExecute {
 	}
 
 	/**
+	 * Deep clones execution data to prevent sharing references between parallel executions
+	 */
+	private cloneExecutionData(executionData: IExecuteData): IExecuteData {
+		try {
+			// Deep clone the execution data to prevent shared references in parallel execution
+			const clonedData: ITaskDataConnections = {};
+			
+			// Clone each connection type
+			for (const [connectionType, connections] of Object.entries(executionData.data)) {
+				clonedData[connectionType] = connections.map(items => 
+					items ? items.map(item => ({
+						json: item.json ? JSON.parse(JSON.stringify(item.json)) : {},
+						binary: item.binary ? { ...item.binary } : undefined,
+						pairedItem: item.pairedItem ? (
+							Array.isArray(item.pairedItem) 
+								? item.pairedItem.map(pi => pi ? { ...pi } : pi)
+								: typeof item.pairedItem === 'object' && item.pairedItem !== null 
+									? { ...item.pairedItem }
+									: item.pairedItem
+						) : undefined,
+						error: item.error,
+					} as INodeExecutionData)) : items
+				);
+			}
+
+			// Clone the source data if it exists
+			const clonedSource = executionData.source ? {
+				main: executionData.source.main?.map(sourceItem => 
+					sourceItem ? { ...sourceItem } : sourceItem
+				)
+			} : null;
+
+			// Deep clone the node to prevent parameter corruption in parallel execution
+			const clonedNode = {
+				...executionData.node,
+				parameters: executionData.node.parameters ? 
+					JSON.parse(JSON.stringify(executionData.node.parameters)) : {}
+			};
+
+			return {
+				node: clonedNode,
+				data: clonedData,
+				source: clonedSource,
+				metadata: executionData.metadata ? { ...executionData.metadata } : undefined,
+			};
+		} catch (error) {
+			// Fallback to original data if cloning fails, but log the issue
+			Logger.warn('Failed to clone execution data for parallel execution, using original data', {
+				nodeName: executionData.node.name,
+				error: error.message,
+			});
+			return executionData;
+		}
+	}
+
+	/**
 	 * Checks if everything in the workflow is complete
 	 * and ready to be executed. If it returns null everything
 	 * is fine. If there are issues it returns the issues
@@ -1242,6 +1298,19 @@ export class WorkflowExecute {
 			closeFunctions,
 			abortSignal,
 		);
+
+		// Validate context is properly initialized to prevent parallel execution issues
+		if (typeof context.getNodeParameter !== 'function') {
+			throw new ApplicationError('ExecuteContext getNodeParameter not properly bound', {
+				extra: { 
+					nodeName: node.name, 
+					nodeType: node.type,
+					contextType: typeof context,
+					hasGetNodeParameter: 'getNodeParameter' in context,
+					getNodeParameterType: typeof context.getNodeParameter
+				}
+			});
+		}
 
 		let data: INodeExecutionData[][] | null = null;
 
@@ -1567,7 +1636,6 @@ export class WorkflowExecute {
 		let runIndex: number;
 		let currentExecutionTry = '';
 		let lastExecutionTry = '';
-		let closeFunction: Promise<void> | undefined;
 
 		let nodeSuccessData: INodeExecutionData[][] | null | undefined = null;
 		executionError = undefined;
@@ -1722,8 +1790,8 @@ export class WorkflowExecute {
 
 					if (runNodeData.closeFunction) {
 						// Explanation why we do this can be found in n8n-workflow/Workflow.ts -> runNode
-
-						closeFunction = runNodeData.closeFunction();
+						// Note: closeFunction is handled at the workflow level, not per-node in parallel execution
+						await runNodeData.closeFunction();
 					}
 				}
 
@@ -2137,9 +2205,12 @@ export class WorkflowExecute {
 					const toLaunch = readyToExecute.slice(0, maxParallel - activeExecutions.size);
 					
 					for (const executionData of toLaunch) {
+						// Clone execution data to prevent shared references in parallel execution
+						const isolatedExecutionData = this.cloneExecutionData(executionData);
+						
 						const executionPromise = this.executeOneNodeAndScheduleChildren(
 							workflow,
-							executionData,
+							isolatedExecutionData,
 							hooks,
 						).catch((error) => {
 							// Handle errors from individual node executions

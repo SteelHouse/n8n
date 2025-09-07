@@ -113,7 +113,7 @@ watch(
 	<LoadingView v-if="loading" />
 	<div
 		v-else
-		id="n8n-app"
+		id="quickframe-app"
 		:class="{
 			[$style.container]: true,
 			[$style.sidebarCollapsed]: uiStore.sidebarMenuCollapsed,
@@ -161,6 +161,36 @@ watch(
 	overflow: hidden;
 	display: grid;
 	grid-template-columns: 1fr auto;
+	position: relative;
+	
+	// Glass morphism background with proper teal gradients
+	&::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: -10;
+		background: 
+			radial-gradient(162.34% 115.1% at 70.34% 91.1%, rgba(26, 201, 170, 0.12) 0%, rgba(24, 31, 37, 0) 62.23%),
+			linear-gradient(0deg, rgba(7, 10, 13, 0.95), rgba(7, 10, 13, 0.95));
+	}
+	
+	// Additional glass container overlay for depth
+	&::after {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: -5;
+		background: 
+			radial-gradient(91.1% 134.37% at 70.34% 91.1%, rgba(26, 201, 170, 0.06) 0%, rgba(24, 31, 37, 0) 62.23%),
+			rgba(87, 90, 92, 0.05);
+		pointer-events: none;
+	}
 }
 
 // App grid is the main app layout including modals and other absolute positioned elements

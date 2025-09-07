@@ -407,7 +407,8 @@
       "dist/credentials/ZoomApi.credentials.js",
       "dist/credentials/ZoomOAuth2Api.credentials.js",
       "dist/credentials/ZscalerZiaApi.credentials.js",
-      "dist/credentials/ZulipApi.credentials.js"
+      "dist/credentials/ZulipApi.credentials.js",
+      "dist/credentials/CreativeSuiteApi.credentials.js"
     ],
     "nodes": [
       "dist/nodes/ActionNetwork/ActionNetwork.node.js",
@@ -847,7 +848,25 @@
       "dist/nodes/Transform/RemoveDuplicates/RemoveDuplicates.node.js",
       "dist/nodes/Transform/SplitOut/SplitOut.node.js",
       "dist/nodes/Transform/Sort/Sort.node.js",
-      "dist/nodes/Transform/Summarize/Summarize.node.js"
+      "dist/nodes/Transform/Summarize/Summarize.node.js",
+      "dist/nodes/Mntn/AddAnimation.node.js",
+      "dist/nodes/Mntn/AddAudioElement.node.js",
+      "dist/nodes/Mntn/AddImageElement.node.js",
+      "dist/nodes/Mntn/AddTextElement.node.js",
+      "dist/nodes/Mntn/AddVideoElement.node.js",
+      "dist/nodes/Mntn/AddVideoElement3.node.js",
+      "dist/nodes/Mntn/AttachElement.node.js",
+      "dist/nodes/Mntn/CreateScene.node.js",
+      "dist/nodes/Mntn/GenerateAudio.node.js",
+      "dist/nodes/Mntn/GenerateImage.node.js",
+      "dist/nodes/Mntn/GenerateMusic.node.js",
+      "dist/nodes/Mntn/GenerateText.node.js",
+      "dist/nodes/Mntn/GenerateVideo.node.js",
+      "dist/nodes/Mntn/GetOrCreateBrand.node.js",
+      "dist/nodes/Mntn/InitializeAdCode.node.js",
+      "dist/nodes/Mntn/PreviewAdCode.node.js",
+      "dist/nodes/Mntn/PreviewAndSaveAsset.node.js",
+      "dist/nodes/Mntn/ReadAndOutputAdCode.node.js"
     ]
   },
   "devDependencies": {

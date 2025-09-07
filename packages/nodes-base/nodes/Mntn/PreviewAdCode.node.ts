@@ -31,7 +31,7 @@ export class PreviewAdCode implements INodeType {
     for (let i = 0; i < items.length; i++) {
       // SIMPLE: Just create preview URL with executionId
       const executionId = this.getExecutionId();
-      const previewUrl = `${process.env.PUBLIC_URL}/preview/n8n?executionId=${executionId}`;
+      const previewUrl = `https://viva-actual-n8n-feature.uidev.west2.mountain.com/preview/n8n?executionId=${executionId}`;
 
       // Return HTML for the built-in HTML node to render
       const buttonHtml = `<a href='${previewUrl}' target='_blank' style='display: block; padding: 20px; background: #28a745; color: white; text-decoration: none; text-align: center; border-radius: 8px; font-size: 18px; font-weight: bold; margin: 10px 0;'>🚀 Preview Video</a>`;

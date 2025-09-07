@@ -2604,6 +2604,7 @@ export interface IWorkflowSettings {
 	saveExecutionProgress?: 'DEFAULT' | boolean;
 	executionTimeout?: number;
 	executionOrder?: 'v0' | 'v1';
+	maxParallel?: number;
 	timeSavedPerExecution?: number;
 	availableInMCP?: boolean;
 }

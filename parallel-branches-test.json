@@ -1,0 +1,338 @@
+{
+  "name": "Parallel Branches Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-node",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simulate some work with a delay\nconst branchName = 'Branch 1';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 2 seconds of work\nawait new Promise(resolve => setTimeout(resolve, 2000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "branch1-node",
+      "name": "Branch 1 Work",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simulate some work with a delay\nconst branchName = 'Branch 2';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 2 seconds of work\nawait new Promise(resolve => setTimeout(resolve, 2000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "branch2-node",
+      "name": "Branch 2 Work",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simulate some work with a delay\nconst branchName = 'Branch 3';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 2 seconds of work\nawait new Promise(resolve => setTimeout(resolve, 2000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "branch3-node",
+      "name": "Branch 3 Work",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simulate some work with a delay\nconst branchName = 'Branch 4';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 2 seconds of work\nawait new Promise(resolve => setTimeout(resolve, 2000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "branch4-node",
+      "name": "Branch 4 Work",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simulate some work with a delay\nconst branchName = 'Branch 5';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 2 seconds of work\nawait new Promise(resolve => setTimeout(resolve, 2000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "branch5-node",
+      "name": "Branch 5 Work",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Continue work on Branch 1 after initial processing\nconst branchName = 'Branch 1 - Phase 2';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 1 second of work\nawait new Promise(resolve => setTimeout(resolve, 1000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nconst inputData = $input.all();\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString(),\n    previousData: inputData[0].json\n  }\n}];"
+      },
+      "id": "branch1-phase2-node",
+      "name": "Branch 1 Phase 2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Continue work on Branch 2 after initial processing\nconst branchName = 'Branch 2 - Phase 2';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 1 second of work\nawait new Promise(resolve => setTimeout(resolve, 1000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nconst inputData = $input.all();\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString(),\n    previousData: inputData[0].json\n  }\n}];"
+      },
+      "id": "branch2-phase2-node",
+      "name": "Branch 2 Phase 2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Continue work on Branch 3 after initial processing\nconst branchName = 'Branch 3 - Phase 2';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 1 second of work\nawait new Promise(resolve => setTimeout(resolve, 1000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nconst inputData = $input.all();\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString(),\n    previousData: inputData[0].json\n  }\n}];"
+      },
+      "id": "branch3-phase2-node",
+      "name": "Branch 3 Phase 2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Continue work on Branch 4 after initial processing\nconst branchName = 'Branch 4 - Phase 2';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 1 second of work\nawait new Promise(resolve => setTimeout(resolve, 1000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nconst inputData = $input.all();\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString(),\n    previousData: inputData[0].json\n  }\n}];"
+      },
+      "id": "branch4-phase2-node",
+      "name": "Branch 4 Phase 2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Continue work on Branch 5 after initial processing\nconst branchName = 'Branch 5 - Phase 2';\nconst startTime = Date.now();\nconsole.log(`${branchName} started at ${new Date().toISOString()}`);\n\n// Simulate 1 second of work\nawait new Promise(resolve => setTimeout(resolve, 1000));\n\nconst endTime = Date.now();\nconsole.log(`${branchName} completed at ${new Date().toISOString()}`);\n\nconst inputData = $input.all();\n\nreturn [{\n  json: {\n    branch: branchName,\n    startTime,\n    endTime,\n    duration: endTime - startTime,\n    timestamp: new Date().toISOString(),\n    previousData: inputData[0].json\n  }\n}];"
+      },
+      "id": "branch5-phase2-node",
+      "name": "Branch 5 Phase 2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "merge",
+        "options": {}
+      },
+      "id": "merge-node",
+      "name": "Merge All Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        900,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Analyze the timing results to show parallel execution\nconst allData = $input.all();\nconsole.log('Final results received:', allData.length, 'items');\n\n// Calculate the total execution time and verify parallel execution\nconst results = allData.map(item => item.json);\nconst startTimes = results.map(r => r.startTime || r.previousData?.startTime).filter(Boolean);\nconst endTimes = results.map(r => r.endTime).filter(Boolean);\n\nconst overallStart = Math.min(...startTimes);\nconst overallEnd = Math.max(...endTimes);\nconst totalWallClockTime = overallEnd - overallStart;\nconst totalProcessingTime = results.reduce((sum, r) => sum + (r.duration || 0), 0);\n\nconsole.log(`Overall execution time: ${totalWallClockTime}ms`);\nconsole.log(`Total processing time: ${totalProcessingTime}ms`);\nconsole.log(`Parallel efficiency: ${((totalProcessingTime / totalWallClockTime) * 100).toFixed(1)}%`);\n\nreturn [{\n  json: {\n    summary: {\n      totalBranches: results.length,\n      overallExecutionTime: totalWallClockTime,\n      totalProcessingTime: totalProcessingTime,\n      parallelEfficiency: ((totalProcessingTime / totalWallClockTime) * 100).toFixed(1) + '%',\n      executionStarted: new Date(overallStart).toISOString(),\n      executionCompleted: new Date(overallEnd).toISOString()\n    },\n    branchResults: results,\n    message: totalWallClockTime < totalProcessingTime * 0.8 ? \n      'SUCCESS: Branches executed in parallel!' : \n      'WARNING: Branches may have executed sequentially'\n  }\n}];"
+      },
+      "id": "analyze-results-node",
+      "name": "Analyze Parallel Execution",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Branch 1 Work",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Branch 2 Work",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Branch 3 Work",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Branch 4 Work",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Branch 5 Work",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch 1 Work": {
+      "main": [
+        [
+          {
+            "node": "Branch 1 Phase 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch 2 Work": {
+      "main": [
+        [
+          {
+            "node": "Branch 2 Phase 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch 3 Work": {
+      "main": [
+        [
+          {
+            "node": "Branch 3 Phase 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch 4 Work": {
+      "main": [
+        [
+          {
+            "node": "Branch 4 Phase 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch 5 Work": {
+      "main": [
+        [
+          {
+            "node": "Branch 5 Phase 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch 1 Phase 2": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch 2 Phase 2": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Branch 3 Phase 2": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Branch 4 Phase 2": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Branch 5 Phase 2": {
+      "main": [
+        [
+          {
+            "node": "Merge All Results",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Merge All Results": {
+      "main": [
+        [
+          {
+            "node": "Analyze Parallel Execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "maxParallel": 10
+  },
+  "versionId": "1",
+  "meta": {
+    "instanceId": "test"
+  },
+  "id": "parallel-test",
+  "tags": []
+}

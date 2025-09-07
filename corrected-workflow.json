@@ -1,0 +1,829 @@
+{
+  "name": "2 Person Dialogue + Music Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        48
+      ],
+      "id": "e71e7eba-4f1f-473c-971e-645e9f4a5058",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1c6b6293-60d7-4573-9d7b-57a788174899",
+              "name": "userPrompt",
+              "value": "Make me an ad",
+              "type": "string"
+            },
+            {
+              "id": "a9788e37-77cb-4e72-9db7-f381f7004ec0",
+              "name": "companyUrl",
+              "value": "https://mountain.com",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        48
+      ],
+      "id": "406358c1-8c16-4e41-b2ac-3c1719543c2f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "brandWebsite": "={{ $json.companyUrl }}"
+      },
+      "type": "n8n-nodes-base.getOrCreateBrand",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        48
+      ],
+      "id": "ca04df2a-d3d9-41c0-8b5c-a661cdc3f844",
+      "name": "Get or Create Brand",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "durationInSeconds": 15
+      },
+      "type": "n8n-nodes-base.initializeAdCode",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        48
+      ],
+      "id": "d8a26675-4694-4c18-866e-c5ff33b2f3a3",
+      "name": "Initialize AdCode",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sceneIndex": 1,
+        "durationInFrames": "={{ $json.output.scenes[1].duration_frames }}"
+      },
+      "type": "n8n-nodes-base.createScene",
+      "typeVersion": 1,
+      "position": [
+        704,
+        -144
+      ],
+      "id": "4a7ce6e4-9726-492b-a8c7-e5f2e26e358a",
+      "name": "Create Scene1",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.previewAdCode",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        48
+      ],
+      "id": "df19877a-41bc-474c-be85-b084383b3705",
+      "name": "Preview AdCode"
+    },
+    {
+      "parameters": {
+        "html": "{{ $json.html }}"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1824,
+        48
+      ],
+      "id": "c85d7303-43e1-4bb3-8376-ac58b9e99f80",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "textPrompt": "=Visual Prompt: \n\nLocation/ Scene description: {{ $('AI Agent').item.json.output.scenes[1].visual_prompt.location }}\n\nMotion: {{ $('AI Agent').item.json.output.scenes[1].visual_prompt.motion[0] }}\n\nCamera: {{ $('AI Agent').item.json.output.scenes[1].visual_prompt.camera[0] }}\n\nLighting: {{ $('AI Agent').item.json.output.scenes[1].visual_prompt.lighting }}\n\nStyle: {{ $('AI Agent').item.json.output.scenes[1].visual_prompt.style }}"
+      },
+      "type": "n8n-nodes-base.generateVideo",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -144
+      ],
+      "id": "bac0deab-24b6-439b-8a89-b0acb4374e31",
+      "name": "Generate Video",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "src": "={{ $json.asset.assetFiles[0].urls.preview }}"
+      },
+      "type": "n8n-nodes-base.addVideoElement",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        -144
+      ],
+      "id": "d0fbb3e0-1a29-4f92-ac7a-f598e2efc713",
+      "name": "Add Video Element"
+    },
+    {
+      "parameters": {
+        "sceneIndex": 1
+      },
+      "type": "n8n-nodes-base.attachElement",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        -144
+      ],
+      "id": "f3516123-0046-41e1-8c16-db8cdbcb5f70",
+      "name": "Attach Element1",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "musicDescription": "rock"
+      },
+      "type": "n8n-nodes-base.generateMusic",
+      "typeVersion": 1,
+      "position": [
+        928,
+        432
+      ],
+      "id": "83f398e5-410d-4858-af0a-05d9d0d7f75b",
+      "name": "Generate Music",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "src": "={{ $json.asset.assetFiles[0].urls.original }}",
+        "assetId": "={{ $json.asset.assetFiles[0].assetId }}"
+      },
+      "type": "n8n-nodes-base.addAudioElement",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        432
+      ],
+      "id": "970b8316-c59d-4c44-9c9e-a955e580fd90",
+      "name": "Add Audio Element"
+    },
+    {
+      "parameters": {
+        "layerType": "overlay"
+      },
+      "type": "n8n-nodes-base.attachElement",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        432
+      ],
+      "id": "9ac8d1d1-4d2b-4b52-9829-63fad013f1a6",
+      "name": "Attach Element2",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sceneIndex": 2,
+        "durationInFrames": "={{ $json.output.scenes[2].duration_frames }}"
+      },
+      "type": "n8n-nodes-base.createScene",
+      "typeVersion": 1,
+      "position": [
+        704,
+        48
+      ],
+      "id": "f90b16d4-fcd0-4019-8e31-80f7ed98408a",
+      "name": "Create Scene2",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "textPrompt": "=Visual Prompt:\n\nLocation/ Scene description: {{ $('AI Agent').item.json.output.scenes[2].visual_prompt.location }}\n\nCharacters: \n\nConversational Characters:\n\nCharacter 1: {{ $('AI Agent').item.json.output.scenes[2].visual_prompt.subjects.conversational_subjects.subject_1 }}\n\nCharacter 2: {{ $('AI Agent').item.json.output.scenes[2].visual_prompt.subjects.conversational_subjects.subject_2 }}\n\nBackground Characters: {{ $('AI Agent').item.json.output.scenes[2].visual_prompt.subjects.background_subjects[0] }}\n\nCharacter Motion:\n\nCharacter 1: {{ $('AI Agent').item.json.output.scenes[2].visual_prompt.motion[0] }}\n\nCharacter 2: {{ $('AI Agent').item.json.output.scenes[2].visual_prompt.motion[1] }}\n\nCamera: {{ $('AI Agent').item.json.output.scenes[2].visual_prompt.camera[0] }}\n\nLighting: {{ $('AI Agent').item.json.output.scenes[2].visual_prompt.lighting }}\n\nStyle: {{ $('AI Agent').item.json.output.scenes[2].visual_prompt.style }}\n\nCharacter Dialogue:\n\nCharacter 1: {{ $('AI Agent').item.json.output.scenes[2].audio_prompt.dialogue[0].character }}\n\nCharacter 1 voice description: {{ $('AI Agent').item.json.output.scenes[2].audio_prompt.dialogue[0].voice_description }}\n\nCharacter 1 line: \"{{ $('AI Agent').item.json.output.scenes[2].audio_prompt.dialogue[0].line }}\"\n\nCharacter 2: {{ $('AI Agent').item.json.output.scenes[2].audio_prompt.dialogue[1].character }}\n\nCharacter 2 voice description: {{ $('AI Agent').item.json.output.scenes[2].audio_prompt.dialogue[1].voice_description }}\n\nCharacter 2 dialogue: \"{{ $('AI Agent').item.json.output.scenes[2].audio_prompt.dialogue[1].line }}\"\n\nSound Effects: \n\n- {{ $('AI Agent').item.json.output.scenes[2].audio_prompt.sound_effects[0] }}\n- {{ $('AI Agent').item.json.output.scenes[2].audio_prompt.sound_effects[1] }}\n- {{ $('AI Agent').item.json.output.scenes[2].audio_prompt.sound_effects[2] }}\n- {{ $('AI Agent').item.json.output.scenes[2].audio_prompt.sound_effects[3] }}",
+        "generateAudio": true
+      },
+      "type": "n8n-nodes-base.generateVideo",
+      "typeVersion": 1,
+      "position": [
+        928,
+        48
+      ],
+      "id": "635ab7f9-f436-4a80-93a9-e7bcb2a91df7",
+      "name": "Generate Video1",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "src": "={{ $json.asset.assetFiles[0].urls.preview }}",
+        "startFrom": "={{ $json.transcription.segments[0].start }}"
+      },
+      "type": "n8n-nodes-base.addVideoElement",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        48
+      ],
+      "id": "0cd47df1-553f-4720-a5cd-3ff66fc0acb8",
+      "name": "Add Video Element1"
+    },
+    {
+      "parameters": {
+        "sceneIndex": 2
+      },
+      "type": "n8n-nodes-base.attachElement",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        48
+      ],
+      "id": "80650a6e-12af-4c63-96c7-fbfd4de8876a",
+      "name": "Attach Element3",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sceneIndex": 3,
+        "durationInFrames": "={{ $json.output.scenes[3].duration_frames }}",
+        "description": "="
+      },
+      "type": "n8n-nodes-base.createScene",
+      "typeVersion": 1,
+      "position": [
+        704,
+        240
+      ],
+      "id": "c06be4ab-a1b1-41d4-8ea9-3f2c5577d5d2",
+      "name": "Create Scene3",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "generationType": "image-to-video",
+        "textPrompt": "=Visual Prompt: \n\nLocation/ scene description: {{ $('AI Agent').item.json.output.scenes[3].visual_prompt.location }}\n\nMotion: {{ $('AI Agent').item.json.output.scenes[3].visual_prompt.motion[0] }}\n\nCamera: {{ $('AI Agent').item.json.output.scenes[3].visual_prompt.camera[0] }}\n\nLighting: {{ $('AI Agent').item.json.output.scenes[3].visual_prompt.lighting }}\n\nStyle: {{ $('AI Agent').item.json.output.scenes[3].visual_prompt.style }}\n\nSound Effects:\n\n- {{ $('AI Agent').item.json.output.scenes[3].audio_prompt.sound_effects[0] }}\n- {{ $('AI Agent').item.json.output.scenes[3].audio_prompt.sound_effects[1] }}",
+        "sourceImageUrl": "={{ $('Get or Create Brand').item.json.brand.logos[1].formats[0].src }}"
+      },
+      "type": "n8n-nodes-base.generateVideo",
+      "typeVersion": 1,
+      "position": [
+        928,
+        240
+      ],
+      "id": "f9c7e22e-86b4-4021-ad27-2135b97644dc",
+      "name": "Generate Video2",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "src": "={{ $json.asset.assetFiles[0].urls.preview }}"
+      },
+      "type": "n8n-nodes-base.addVideoElement",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        240
+      ],
+      "id": "f0aa27f5-e1c6-42fa-a1b4-05fca1f60c53",
+      "name": "Add Video Element2"
+    },
+    {
+      "parameters": {
+        "sceneIndex": 3
+      },
+      "type": "n8n-nodes-base.attachElement",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        240
+      ],
+      "id": "5f626137-24ab-4788-b0fc-12f65127837b",
+      "name": "Attach Element4",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Get or Create Brand').item.json.brand.description }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a Commercial Generation Agent.\nYour role is to act as a film director and create short-form commercials (15 seconds total, broken into 4 scenes) using the Authentic Conversation template.\n\n🎯 Goals\n\nAlways feature two subjects (e.g., parents, friends, coworkers).\n\nConversational dialogue only (no narrator).\n\nMaintain character likeness and consistency across all scenes.\n\nRe-describe characters and environments fully in every dialogue scene (Scene 1 and Scene 3).\n\nDialogue Scenes (1 & 3):\n\nBoth characters are on camera in the opening frame.\n\nOnly one character speaks per scene (the other remains present but silent).\n\nDialogue must be short (≤10 words), so it always fits within 5 seconds.\n\nInclude full physical description for each subject: age, ethnicity, skin tone, facial features, hair, clothing, demeanor, posture.\n\nInclude full voice description for the speaking character: accent, pitch, tone, age, emotional delivery.\n\nInclude environment description: location details, props, background subjects.\n\nDo not use “same as before,” “same kitchen,” or “same character.”\n\nEnvironments evolve logically (chaotic → calm).\n\nScene durations: ~15s total → Scene 1 (5s), Scene 2 (2s), Scene 3 (5s), Scene 4 (3s).\n\nFrame duration must be calculated at 30 FPS.\n\nLighting descriptions should be simple, naturalistic, and cinematic (avoid “harsh fluorescent” or technical jargon that may confuse the model).\n\nDialogue style: natural, realistic, short, and time-bound.\n\nApproach visuals as a cinematic director: use camera, lensing, lighting, staging, and pacing deliberately.\n\nNo music in audio prompts — only dialogue and environmental sound effects.\n\n📥 Input\n\nYou will be provided with:\n\nBrand information (brand name, product, positioning).\n\nUser prompt/goal (tone, theme, scenario).\n\n📤 Output\n\nProduce a 4-scene storyboard in JSON format. Each scene must include:\n\n{\n  \"scene_number\": 1,\n  \"title\": \"Scene Title\",\n  \"duration_seconds\": 5,\n  \"duration_frames\": 150,\n  \"visual_prompt\": {\n    \"location\": \"Full description of environment.\",\n    \"subjects\": {\n      \"conversational_subjects\": {\n        \"subject_1\": \"Full character description (name, age, ethnicity, skin tone, hair, clothing, posture, demeanor).\",\n        \"subject_2\": \"Full character description (name, age, ethnicity, skin tone, hair, clothing, posture, demeanor).\"\n      },\n      \"background_subjects\": [\n        \"Detailed description of secondary/background characters or environmental figures.\"\n      ]\n    },\n    \"motion\": [\n      \"Describe how characters move or interact physically.\"\n    ],\n    \"camera\": [\n      \"Detailed cinematic direction: shot type, framing, angle, lens choice, movement.\"\n    ],\n    \"lighting\": \"Simple, naturalistic, cinematic lighting (describe mood, warmth, direction).\",\n    \"style\": \"Describe overall cinematic tone and polish.\"\n  },\n  \"audio_prompt\": {\n    \"dialogue\": {\n      \"character\": \"Subject 1\",\n      \"voice_description\": \"Accent, age, pitch, tone, emotional delivery.\",\n      \"line\": \"≤10 words dialogue line fitting within 5s.\"\n    },\n    \"sound_effects\": [\n      \"Environmental and prop sound effects.\"\n    ]\n  }\n}\n\n📑 Commercial Template\n\nScene 1 (5s / 150 frames): Chaotic relatable setup. Both characters on screen, but only one speaks.\n\nScene 2 (2s / 60 frames): Product beauty shot (SFX only).\n\nScene 3 (5s / 150 frames): Resolution. Both characters on screen, but only one speaks.\n\nScene 4 (3s / 90 frames): End card with tagline (SFX only).\n\n✅ Key Rules\n\nTwo Subjects Only: Always listed as subject_1 and subject_2.\n\nFull Re-description: Re-describe characters and environments in Scene 1 and Scene 3.\n\nOpening Frame Rule: Scene 1 and Scene 3 must always open with both subjects in frame.\n\nOne Speaker Rule: Only one subject speaks in Scene 1 and one subject speaks in Scene 3.\n\nDialogue Duration Control: ≤10 words per line, natural, realistic delivery.\n\nNo Narrator / No Music: Only dialogue and environmental SFX.\n\nDuration in Frames: Always seconds × 30 FPS.\n\nDirector’s Eye: Make every scene cinematic through camera, lighting, staging."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        48
+      ],
+      "id": "dda70328-cfc7-4c9a-838d-c1e416ab190a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        272
+      ],
+      "id": "83d3e95c-8c58-4d80-8287-53806d1d1cbb",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "G9IY85GKsOrxPbqO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "durationInFrames": "={{ $('AI Agent').item.json.output.scenes[0].duration_frames }}"
+      },
+      "type": "n8n-nodes-base.createScene",
+      "typeVersion": 1,
+      "position": [
+        704,
+        -336
+      ],
+      "id": "b6213543-7f5b-4e4f-849c-6f2e33603d27",
+      "name": "Create Scene4",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "textPrompt": "=Visual Prompt:\n\nLocation/ Scene description: {{ $('AI Agent').item.json.output.scenes[0].visual_prompt.location }}\n\nCharacters: \n\nConversational Characters:\n\nCharacter 1: {{ $('AI Agent').item.json.output.scenes[0].visual_prompt.subjects.conversational_subjects.subject_1 }}\n\nCharacter 2: {{ $('AI Agent').item.json.output.scenes[0].visual_prompt.subjects.conversational_subjects.subject_2 }}\n\nBackground Characters: {{ $('AI Agent').item.json.output.scenes[0].visual_prompt.subjects.background_subjects[0] }}\n\nCharacter Motion:\n\nCharacter 1: {{ $('AI Agent').item.json.output.scenes[0].visual_prompt.motion[0] }}\n\nCharacter 2: {{ $('AI Agent').item.json.output.scenes[0].visual_prompt.motion[1] }}\n\nCamera: {{ $('AI Agent').item.json.output.scenes[0].visual_prompt.camera[0] }}{{ $('AI Agent').item.json.output.scenes[0].visual_prompt.camera[1] }}\n\nLighting: {{ $('AI Agent').item.json.output.scenes[0].visual_prompt.lighting }}\n\nStyle: {{ $('AI Agent').item.json.output.scenes[0].visual_prompt.style }}\n\nCharacters Dialogue:\n\nCharacter 1: {{ $('AI Agent').item.json.output.scenes[0].audio_prompt.dialogue[0].character }}\n\nCharacter 1 voice description: {{ $('AI Agent').item.json.output.scenes[0].audio_prompt.dialogue[0].voice_description }}\n\nCharacter 1 dialogue: \"{{ $('AI Agent').item.json.output.scenes[0].audio_prompt.dialogue[0].line }}\"\n\nCharacter 2: {{ $('AI Agent').item.json.output.scenes[0].audio_prompt.dialogue[1].character }}\n\nCharacter 2 voice description: {{ $('AI Agent').item.json.output.scenes[0].audio_prompt.dialogue[1].voice_description }}\n\nCharacter 2 dialogue: \"{{ $('AI Agent').item.json.output.scenes[0].audio_prompt.dialogue[1].line }}\"\n\nSound Effects: \n\n- {{ $('AI Agent').item.json.output.scenes[0].audio_prompt.sound_effects[0] }}\n- {{ $('AI Agent').item.json.output.scenes[0].audio_prompt.sound_effects[1] }}\n- {{ $('AI Agent').item.json.output.scenes[0].audio_prompt.sound_effects[2] }}\n- {{ $('AI Agent').item.json.output.scenes[0].audio_prompt.sound_effects[3] }}",
+        "generateAudio": true
+      },
+      "type": "n8n-nodes-base.generateVideo",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -336
+      ],
+      "id": "c766a671-a966-4721-b2b6-14bcbbcb0e2f",
+      "name": "Generate Video3",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "src": "={{ $json.asset.assetFiles[0].urls.preview }}",
+        "startFrom": "={{ $json.transcription.segments[0].start }}"
+      },
+      "type": "n8n-nodes-base.addVideoElement",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        -336
+      ],
+      "id": "55d7be22-f483-4fd2-9205-c800c7e6d418",
+      "name": "Add Video Element3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.attachElement",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        -336
+      ],
+      "id": "74f7edea-ae14-441d-986d-f43739468a5d",
+      "name": "Attach Element5",
+      "credentials": {
+        "creativeSuiteApi": {
+          "id": "twYroGKjHohEQsva",
+          "name": "Creative Suite account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"template\": \"Authentic Conversation\",\n  \"brand\": {\n    \"name\": \"MorningRise Coffee\",\n    \"product\": \"Coffee Subscription\",\n    \"positioning\": \"Fast, premium, stress-saving morning ritual\",\n    \"tagline\": \"Start your day right.\"\n  },\n  \"spec\": {\n    \"fps\": 30,\n    \"total_duration_seconds\": 15,\n    \"total_duration_frames\": 450\n  },\n  \"scenes\": [\n    {\n      \"scene_number\": 1,\n      \"title\": \"Morning Rush—Relatable Chaos\",\n      \"duration_seconds\": 5,\n      \"duration_frames\": 150,\n      \"visual_prompt\": {\n        \"location\": \"Interior suburban kitchen, weekday morning chaos.\",\n        \"subjects\": {\n          \"conversational_subjects\": {\n            \"subject_1\": \"Parent 1 (Mother): Latina woman, late 30s, light olive skin, medium-brown eyes, curly black hair in a messy bun, wrinkled gray pajama shirt, plaid pants. Expression: tired, frazzled, rushing.\",\n            \"subject_2\": \"Parent 2 (Father): African-American man, early 40s, medium-dark skin, cropped black hair with salt-and-pepper at temples, neatly trimmed beard, athletic build. Wearing light blue polo, khakis. Calm and supportive demeanor.\"\n          },\n          \"background_subjects\": [\n            \"Children: Boy (8) and girl (6) in the background arguing over a toy at the breakfast table.\"\n          ]\n        },\n        \"motion\": [\n          \"Mother rushes between counter and table, juggling toast and lunchbox.\",\n          \"Father calmly sips coffee, leaning against counter.\",\n          \"Children argue in background, slight chaotic movement.\"\n        ],\n        \"camera\": [\n          \"Medium-wide two-shot, both parents visible in frame at opening.\",\n          \"Handheld shake for chaotic feel; slow push-in on Mother delivering line.\"\n        ],\n        \"lighting\": \"Cool natural morning light through windows with soft shadows.\",\n        \"style\": \"Cinematic realism, detail-rich, cluttered but authentic household chaos.\"\n      },\n      \"audio_prompt\": {\n        \"dialogue\": {\n          \"character\": \"Mother\",\n          \"voice_description\": \"Light Hispanic accent, mid-to-late 30s, medium pitch, tired and exasperated.\",\n          \"line\": \"It’s 8 a.m. and I’m drained already!\"\n        },\n        \"sound_effects\": [\n          \"Kids bickering faintly in background\",\n          \"Lunchbox lid snapping shut\",\n          \"Toaster pop\",\n          \"Ceramic mug clink on counter\"\n        ]\n      }\n    },\n    {\n      \"scene_number\": 2,\n      \"title\": \"Product Beauty—Brew Ritual\",\n      \"duration_seconds\": 2,\n      \"duration_frames\": 60,\n      \"visual_prompt\": {\n        \"location\": \"Clean wooden countertop in bright kitchen light.\",\n        \"subjects\": {\n          \"conversational_subjects\": {},\n          \"background_subjects\": [\n            \"MorningRise Coffee branded subscription box, matte white packaging with gold diagonal stripe, bold lettering.\",\n            \"Father’s hands (medium-dark skin) opening box, revealing premium bags.\"\n          ]\n        },\n        \"motion\": [\n          \"Box opened carefully.\",\n          \"Slow-motion beans cascading into glass jar.\",\n          \"Hot water blooming grounds in French press.\",\n          \"Steam swirling dramatically as coffee pours into mug.\"\n        ],\n        \"camera\": [\n          \"Extreme close-ups, macro pans, slow-motion focus on textures.\"\n        ],\n        \"lighting\": \"Warm morning sunlight highlighting beans and steam.\",\n        \"style\": \"Premium food-commercial polish; cinematic macro detail.\"\n      },\n      \"audio_prompt\": {\n        \"dialogue\": {},\n        \"sound_effects\": [\n          \"Crisp tear of packaging\",\n          \"Beans rattling into glass jar\",\n          \"Bubbling water pouring into French press\",\n          \"Soft hiss of steam rising\"\n        ]\n      }\n    },\n    {\n      \"scene_number\": 3,\n      \"title\": \"Calm Reset—Shared Sip\",\n      \"duration_seconds\": 5,\n      \"duration_frames\": 150,\n      \"visual_prompt\": {\n        \"location\": \"Suburban kitchen, calmer and tidier after breakfast rush.\",\n        \"subjects\": {\n          \"conversational_subjects\": {\n            \"subject_1\": \"Parent 1 (Mother): Latina woman, late 30s, olive skin, round warm face, curly black hair tied neatly in bun. Wearing beige cardigan over gray pajama shirt, plaid pants. Relaxed posture, smiling with mug in both hands.\",\n            \"subject_2\": \"Parent 2 (Father): African-American man, early 40s, medium-dark skin, cropped hair with salt-and-pepper temples, neat beard. Athletic build, light blue polo and khakis. Smiling warmly, holding mug raised slightly in toast gesture.\"\n          },\n          \"background_subjects\": [\n            \"Children: Sitting calmly at table, quietly eating cereal, occasional soft laughter.\"\n          ]\n        },\n        \"motion\": [\n          \"Parents seated across from each other, mugs in hand.\",\n          \"Slow push-in on Father delivering his line.\",\n          \"Mother smiles quietly while sipping coffee.\"\n        ],\n        \"camera\": [\n          \"Medium two-shot, both parents visible in frame at opening.\",\n          \"Smooth slider move, tightening on Father as he speaks.\"\n        ],\n        \"lighting\": \"Golden daylight through kitchen windows, warm and uplifting.\",\n        \"style\": \"Cinematic realism; continuity with Scene 1, calmer and brighter tone.\"\n      },\n      \"audio_prompt\": {\n        \"dialogue\": {\n          \"character\": \"Father\",\n          \"voice_description\": \"African-American accent, early 40s, deep warm baritone, supportive.\",\n          \"line\": \"Told you—small ritual, big difference.\"\n        },\n        \"sound_effects\": [\n          \"Sip and swallow sound\",\n          \"Ceramic clink of mugs\",\n          \"Soft background of kids’ laughter\"\n        ]\n      }\n    },\n    {\n      \"scene_number\": 4,\n      \"title\": \"End Card—Tagline & Pack\",\n      \"duration_seconds\": 3,\n      \"duration_frames\": 90,\n      \"visual_prompt\": {\n        \"location\": \"Top-down shot of wooden kitchen table.\",\n        \"subjects\": {\n          \"conversational_subjects\": {},\n          \"background_subjects\": [\n            \"Steaming white ceramic mug beside open MorningRise Coffee bag (matte white with gold diagonal stripe).\",\n            \"On-screen text: 'MorningRise Coffee. Start your day right.'\"\n          ]\n        },\n        \"motion\": [\n          \"Static overhead framing.\",\n          \"Subtle continuous steam rising.\",\n          \"Tagline text fades in smoothly.\"\n        ],\n        \"camera\": [\n          \"Static centered top-down composition.\"\n        ],\n        \"lighting\": \"Bright, even daylight with soft shadows.\",\n        \"style\": \"Minimalist, modern, premium branding.\"\n      },\n      \"audio_prompt\": {\n        \"dialogue\": {},\n        \"sound_effects\": [\n          \"Gentle whoosh as text fades in\",\n          \"Ceramic mug placed softly\",\n          \"Subtle hiss of steam\"\n        ]\n      }\n    }\n  ]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        416,
+        256
+      ],
+      "id": "ac6841b2-4969-49d2-848f-ed301dacee2f",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get or Create Brand",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get or Create Brand": {
+      "main": [
+        [
+          {
+            "node": "Initialize AdCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize AdCode": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preview AdCode": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Scene1": {
+      "main": [
+        [
+          {
+            "node": "Generate Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Video": {
+      "main": [
+        [
+          {
+            "node": "Add Video Element",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Video Element": {
+      "main": [
+        [
+          {
+            "node": "Attach Element1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Element1": {
+      "main": [
+        [
+          {
+            "node": "Preview AdCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Music": {
+      "main": [
+        [
+          {
+            "node": "Add Audio Element",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Audio Element": {
+      "main": [
+        [
+          {
+            "node": "Attach Element2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Element2": {
+      "main": [
+        [
+          {
+            "node": "Preview AdCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Scene2": {
+      "main": [
+        [
+          {
+            "node": "Generate Video1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Video1": {
+      "main": [
+        [
+          {
+            "node": "Add Video Element1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Video Element1": {
+      "main": [
+        [
+          {
+            "node": "Attach Element3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Element3": {
+      "main": [
+        [
+          {
+            "node": "Preview AdCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Scene3": {
+      "main": [
+        [
+          {
+            "node": "Generate Video2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Video2": {
+      "main": [
+        [
+          {
+            "node": "Add Video Element2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Video Element2": {
+      "main": [
+        [
+          {
+            "node": "Attach Element4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Element4": {
+      "main": [
+        [
+          {
+            "node": "Preview AdCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Scene4": {
+      "main": [
+        [
+          {
+            "node": "Generate Video3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Video3": {
+      "main": [
+        [
+          {
+            "node": "Add Video Element3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Video Element3": {
+      "main": [
+        [
+          {
+            "node": "Attach Element5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Element5": {
+      "main": [
+        [
+          {
+            "node": "Preview AdCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Generate Music",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Scene3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Scene1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Scene2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Scene4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "maxParallel": 10
+  },
+  "versionId": "b05a7c25-1e90-4fea-8b3b-4787e7acf8ab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "28e7725dd7841c12bb9e5625d8d6f9f861aec6a0a70631a276b1e6b265ceb996"
+  },
+  "id": "Iz5kPxsFa1YJu5cB",
+  "tags": []
+}

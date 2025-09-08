@@ -289,7 +289,7 @@ export class CreateScene implements INodeType {
     const returnData: INodeExecutionData[] = [];
 
     for (let i = 0; i < items.length; i++) {
-      // REDIS ONLY: Get current adCode from Redis
+      // REDIS ONLY: Get current adCode from Redis with retry logic for parallel execution
       const executionIdParam = this.getNodeParameter(
         "executionId",
         i,
@@ -299,186 +299,271 @@ export class CreateScene implements INodeType {
       const apiUrl = credentials.apiUrl as string;
       const apiKey = credentials.apiKey as string;
 
-      const response = await axios.get(
-        `${apiUrl}/trpc/n8n.getExecutionAdCode?input=${encodeURIComponent(JSON.stringify({ executionId }))}`,
-        {
-          headers: { Authorization: `Bearer ${apiKey}` },
-          timeout: 10000,
-        },
-      );
+      // Retry logic for parallel execution race conditions
+      const maxRetries = 5;
+      const baseDelay = 100; // 100ms base delay
+      let lastError: Error | null = null;
 
-      const adCode = response.data?.result?.data;
-      if (!adCode) {
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+          const response = await axios.get(
+            `${apiUrl}/trpc/n8n.getExecutionAdCode?input=${encodeURIComponent(JSON.stringify({ executionId }))}`,
+            {
+              headers: { Authorization: `Bearer ${apiKey}` },
+              timeout: 10000,
+            },
+          );
+
+          const adCode = response.data?.result?.data;
+          if (!adCode) {
+            throw new Error(
+              "No adCode found in Redis. Please run Initialize AdCode node first.",
+            );
+          }
+
+          console.log(
+            `[CreateScene] Retrieved adCode from Redis for execution ${executionId} (attempt ${attempt + 1})`,
+          );
+
+          const sceneIndex = this.getNodeParameter("sceneIndex", i) as number;
+          const transitionAction = this.getNodeParameter(
+            "transitionAction",
+            i,
+          ) as string;
+
+          // Parse dynamic properties
+          const customScenePropsStr = this.getNodeParameter(
+            "customSceneProps",
+            i,
+          ) as string;
+          const advancedTransitionStr = this.getNodeParameter(
+            "advancedTransition",
+            i,
+          ) as string;
+          const sceneMetaOverrideStr = this.getNodeParameter(
+            "sceneMetaOverride",
+            i,
+          ) as string;
+          const layoutOverrideStr = this.getNodeParameter(
+            "layoutOverride",
+            i,
+          ) as string;
+
+          let customSceneProps,
+            advancedTransition,
+            sceneMetaOverride,
+            layoutOverride;
+          try {
+            customSceneProps = customScenePropsStr
+              ? JSON.parse(customScenePropsStr)
+              : {};
+            advancedTransition = advancedTransitionStr
+              ? JSON.parse(advancedTransitionStr)
+              : {};
+            sceneMetaOverride = sceneMetaOverrideStr
+              ? JSON.parse(sceneMetaOverrideStr)
+              : {};
+            layoutOverride = layoutOverrideStr ? JSON.parse(layoutOverrideStr) : {};
+          } catch (e) {
+            throw new Error("Invalid JSON in dynamic scene properties");
+          }
+
+          // Create scene ID
+          const sceneId = `scene-${sceneIndex}`;
+
+          // Build transition object with dynamic support
+          const transition: any = {
+            action: transitionAction,
+            ...advancedTransition, // Override with advanced config
+          };
+
+          if (
+            transitionAction !== "instant" &&
+            !advancedTransition.durationInFrames
+          ) {
+            transition.durationInFrames = this.getNodeParameter(
+              "transitionDuration",
+              i,
+            ) as number;
+          }
+
+          if (
+            ["slide", "flip", "wipe"].includes(transitionAction) &&
+            !advancedTransition.direction
+          ) {
+            transition.direction = this.getNodeParameter(
+              "transitionDirection",
+              i,
+            ) as string;
+          }
+
+          // Build filter object
+          const filterEffect = this.getNodeParameter("filterEffect", i) as string;
+          const filter = filterEffect
+            ? {
+                label:
+                  (this.getNodeParameter("filterLabel", i) as string) ||
+                  "Custom Filter",
+                value: {
+                  filter: filterEffect,
+                },
+              }
+            : undefined;
+
+          // Parse keywords
+          const keywordsString = this.getNodeParameter("keywords", i) as string;
+          const keywords = keywordsString
+            ? keywordsString
+                .split(",")
+                .map((k) => k.trim())
+                .filter((k) => k)
+            : [];
+
+          // Create new scene with dynamic properties (always additive)
+          const baseLayout = {
+            type: this.getNodeParameter("layoutType", i) as
+              | "asset"
+              | "products_scene"
+              | "end_card",
+            theme: this.getNodeParameter("layoutTheme", i) as "light" | "dark",
+            variant: this.getNodeParameter("layoutVariant", i) as number,
+            ...layoutOverride, // Override with dynamic layout
+          };
+
+          const baseMeta = {
+            isSceneLocked: this.getNodeParameter("isSceneLocked", i) as boolean,
+            assetType: this.getNodeParameter("assetType", i) as string,
+            ...sceneMetaOverride, // Override with dynamic meta
+          };
+
+          const scene = {
+            id: sceneId,
+            type: "scene" as const,
+            elements: [], // Always start with empty elements - additive approach
+            sequenceProps: {
+              durationInFrames: this.getNodeParameter(
+                "durationInFrames",
+                i,
+              ) as number,
+            },
+            transition,
+            description: this.getNodeParameter("description", i) as string,
+            aiObjective: this.getNodeParameter("aiObjective", i) as string,
+            aiIndustry: this.getNodeParameter("aiIndustry", i) as string,
+            keywords: keywords.length > 0 ? keywords : undefined,
+            filter,
+            layout: baseLayout,
+            meta: baseMeta,
+            ...customSceneProps, // Override any scene property dynamically
+          };
+
+          // Ensure scenes array exists and is properly sized
+          if (!adCode.scenes) {
+            adCode.scenes = { scenes: [] };
+          }
+          if (!adCode.scenes.scenes) {
+            adCode.scenes.scenes = [];
+          }
+
+          // Smart merge: Only update the specific scene index, preserve others
+          // This helps reduce conflicts when multiple scenes are created concurrently
+          
+          
+          // Extend scenes array if needed, but preserve existing scenes
+          while (adCode.scenes.scenes.length <= sceneIndex) {
+            adCode.scenes.scenes.push(null);
+          }
+
+          // Only update the specific scene index - this is the key for parallel execution
+          const oldScene = adCode.scenes.scenes[sceneIndex];
+          adCode.scenes.scenes[sceneIndex] = scene;
+          
+          // Log what we're doing for debugging
+          if (oldScene) {
+            console.log(`[CreateScene] Replacing existing scene at index ${sceneIndex}`);
+          } else {
+            console.log(`[CreateScene] Creating new scene at index ${sceneIndex}`);
+          }
+
+          // Use atomic scene update with Redis locking - no race conditions
+          try {
+            await axios.post(
+              `${apiUrl}/trpc/n8n.updateExecutionAdCodeScene`,
+              { 
+                executionId, 
+                sceneIndex, 
+                scene,
+                operation: 'upsert'
+              },
+              {
+                headers: { Authorization: `Bearer ${apiKey}` },
+                timeout: 15000, // Longer timeout for lock-based operations
+              },
+            );
+
+            console.log(
+              `[CreateScene] Successfully updated scene ${sceneIndex} atomically with lock for execution ${executionId} (attempt ${attempt + 1})`,
+            );
+
+            // Success - break out of retry loop
+            returnData.push({
+              json: {
+                success: true,
+                executionId,
+                sceneCreated: {
+                  index: sceneIndex,
+                  id: sceneId,
+                },
+                meta: {
+                  nodeType: "createScene",
+                  timestamp: new Date().toISOString(),
+                  attempt: attempt + 1,
+                  updateType: 'atomic-locked',
+                },
+              },
+            });
+            break; // Exit retry loop on success
+
+          } catch (error: any) {
+            lastError = error;
+            console.warn(
+              `[CreateScene] Failed to update Redis on attempt ${attempt + 1}:`,
+              error.message,
+            );
+
+            // If this is not the last attempt, wait before retrying
+            if (attempt < maxRetries - 1) {
+              const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 100; // Add jitter and longer delays for lock contention
+              console.log(`[CreateScene] Lock conflict or error, retrying in ${delay.toFixed(0)}ms...`);
+              await new Promise(resolve => setTimeout(resolve, delay));
+              continue; // Try again
+            }
+          }
+
+        } catch (error: any) {
+          lastError = error;
+          console.warn(
+            `[CreateScene] Failed to read from Redis on attempt ${attempt + 1}:`,
+            error.message,
+          );
+
+          // If this is not the last attempt, wait before retrying
+          if (attempt < maxRetries - 1) {
+            const delay = baseDelay * Math.pow(2, attempt); // Exponential backoff
+            console.log(`[CreateScene] Retrying in ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue;
+          }
+        }
+      }
+
+      // If we get here, all retries failed
+      if (lastError) {
+        console.error(`[CreateScene] All ${maxRetries} attempts failed for execution ${executionId}`);
         throw new Error(
-          "No adCode found in Redis. Please run Initialize AdCode node first.",
+          `Failed to create scene after ${maxRetries} attempts. Last error: ${lastError.message}`,
         );
       }
-
-      console.log(
-        `[CreateScene] Retrieved adCode from Redis for execution ${executionId}`,
-      );
-      const sceneIndex = this.getNodeParameter("sceneIndex", i) as number;
-      const transitionAction = this.getNodeParameter(
-        "transitionAction",
-        i,
-      ) as string;
-
-      // Parse dynamic properties
-      const customScenePropsStr = this.getNodeParameter(
-        "customSceneProps",
-        i,
-      ) as string;
-      const advancedTransitionStr = this.getNodeParameter(
-        "advancedTransition",
-        i,
-      ) as string;
-      const sceneMetaOverrideStr = this.getNodeParameter(
-        "sceneMetaOverride",
-        i,
-      ) as string;
-      const layoutOverrideStr = this.getNodeParameter(
-        "layoutOverride",
-        i,
-      ) as string;
-
-      let customSceneProps,
-        advancedTransition,
-        sceneMetaOverride,
-        layoutOverride;
-      try {
-        customSceneProps = customScenePropsStr
-          ? JSON.parse(customScenePropsStr)
-          : {};
-        advancedTransition = advancedTransitionStr
-          ? JSON.parse(advancedTransitionStr)
-          : {};
-        sceneMetaOverride = sceneMetaOverrideStr
-          ? JSON.parse(sceneMetaOverrideStr)
-          : {};
-        layoutOverride = layoutOverrideStr ? JSON.parse(layoutOverrideStr) : {};
-      } catch (e) {
-        throw new Error("Invalid JSON in dynamic scene properties");
-      }
-
-      // Create scene ID
-      const sceneId = `scene-${sceneIndex}`;
-
-      // Build transition object with dynamic support
-      const transition: any = {
-        action: transitionAction,
-        ...advancedTransition, // Override with advanced config
-      };
-
-      if (
-        transitionAction !== "instant" &&
-        !advancedTransition.durationInFrames
-      ) {
-        transition.durationInFrames = this.getNodeParameter(
-          "transitionDuration",
-          i,
-        ) as number;
-      }
-
-      if (
-        ["slide", "flip", "wipe"].includes(transitionAction) &&
-        !advancedTransition.direction
-      ) {
-        transition.direction = this.getNodeParameter(
-          "transitionDirection",
-          i,
-        ) as string;
-      }
-
-      // Build filter object
-      const filterEffect = this.getNodeParameter("filterEffect", i) as string;
-      const filter = filterEffect
-        ? {
-            label:
-              (this.getNodeParameter("filterLabel", i) as string) ||
-              "Custom Filter",
-            value: {
-              filter: filterEffect,
-            },
-          }
-        : undefined;
-
-      // Parse keywords
-      const keywordsString = this.getNodeParameter("keywords", i) as string;
-      const keywords = keywordsString
-        ? keywordsString
-            .split(",")
-            .map((k) => k.trim())
-            .filter((k) => k)
-        : [];
-
-      // Create new scene with dynamic properties (always additive)
-      const baseLayout = {
-        type: this.getNodeParameter("layoutType", i) as
-          | "asset"
-          | "products_scene"
-          | "end_card",
-        theme: this.getNodeParameter("layoutTheme", i) as "light" | "dark",
-        variant: this.getNodeParameter("layoutVariant", i) as number,
-        ...layoutOverride, // Override with dynamic layout
-      };
-
-      const baseMeta = {
-        isSceneLocked: this.getNodeParameter("isSceneLocked", i) as boolean,
-        assetType: this.getNodeParameter("assetType", i) as string,
-        ...sceneMetaOverride, // Override with dynamic meta
-      };
-
-      const scene = {
-        id: sceneId,
-        type: "scene" as const,
-        elements: [], // Always start with empty elements - additive approach
-        sequenceProps: {
-          durationInFrames: this.getNodeParameter(
-            "durationInFrames",
-            i,
-          ) as number,
-        },
-        transition,
-        description: this.getNodeParameter("description", i) as string,
-        aiObjective: this.getNodeParameter("aiObjective", i) as string,
-        aiIndustry: this.getNodeParameter("aiIndustry", i) as string,
-        keywords: keywords.length > 0 ? keywords : undefined,
-        filter,
-        layout: baseLayout,
-        meta: baseMeta,
-        ...customSceneProps, // Override any scene property dynamically
-      };
-
-      adCode.scenes.scenes[sceneIndex] = scene;
-
-      // Store updated adCode back to Redis
-      await axios.post(
-        `${apiUrl}/trpc/n8n.storeExecutionAdCode`,
-        { executionId, adCode },
-        {
-          headers: { Authorization: `Bearer ${apiKey}` },
-          timeout: 10000,
-        },
-      );
-
-      console.log(
-        `[CreateScene] Updated adCode in Redis for execution ${executionId}`,
-      );
-
-      returnData.push({
-        json: {
-          success: true,
-          executionId,
-          sceneCreated: {
-            index: sceneIndex,
-            id: sceneId,
-          },
-          meta: {
-            nodeType: "createScene",
-            timestamp: new Date().toISOString(),
-          },
-        },
-      });
     }
 
     return [returnData];

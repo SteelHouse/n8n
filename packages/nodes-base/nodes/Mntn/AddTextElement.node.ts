@@ -10,7 +10,7 @@ export class AddTextElement implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - AdCode - Add Text Element",
     name: "addTextElement",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     subtitle: '{{$parameter["content"] || "Text Element"}}',

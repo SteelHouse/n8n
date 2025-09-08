@@ -11,7 +11,7 @@ export class GenerateText implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - Generate Text",
     name: "generateText",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     description: "Generate text using AI models with automatic asset saving",

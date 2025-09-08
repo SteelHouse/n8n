@@ -11,7 +11,7 @@ export class GenerateMusic implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - Generate Music",
     name: "generateMusic",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     description: "Generate background music for the ad using AI",

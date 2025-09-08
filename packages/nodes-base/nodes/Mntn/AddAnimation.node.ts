@@ -11,7 +11,7 @@ export class AddAnimation implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - AdCode - Add Animation",
     name: "addAnimation",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     subtitle:

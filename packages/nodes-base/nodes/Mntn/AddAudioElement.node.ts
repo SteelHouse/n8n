@@ -10,7 +10,7 @@ export class AddAudioElement implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - AdCode - Add Audio Element",
     name: "addAudioElement",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     subtitle:

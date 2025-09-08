@@ -11,7 +11,7 @@ export class GetOrCreateBrand implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - Get or Create Brand",
     name: "getOrCreateBrand",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     description: "Get or create a brand based on website URL",

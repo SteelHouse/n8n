@@ -10,7 +10,7 @@ export class AddImageElement implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - AdCode - Add Image Element",
     name: "addImageElement",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     subtitle: '{{$parameter["src"] || "Image Element"}}',

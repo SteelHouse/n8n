@@ -11,7 +11,7 @@ export class GenerateVideo implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - Generate Video",
     name: "generateVideo",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     description:

@@ -11,7 +11,7 @@ export class PreviewAndSaveAsset implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - Preview and Save Asset",
     name: "previewAndSaveAsset",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     description:

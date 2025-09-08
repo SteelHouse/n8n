@@ -11,7 +11,7 @@ export class InitializeAdCode implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - AdCode - Initialize AdCode",
     name: "initializeAdCode",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     subtitle: '={{$parameter["operation"] || "Create new AdCode"}}',

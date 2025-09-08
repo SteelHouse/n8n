@@ -11,7 +11,7 @@ export class GenerateImage implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - Generate Image",
     name: "generateImage",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     description: "Generate images using AI models with automatic asset saving",

@@ -10,7 +10,7 @@ export class AddVideoElement3 implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - AdCode - Add Video Element3",
     name: "addVideoElement3",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     subtitle: '{{$parameter["src"] || "Video Element3"}}',

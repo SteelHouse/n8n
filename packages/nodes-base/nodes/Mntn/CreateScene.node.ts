@@ -11,7 +11,7 @@ export class CreateScene implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - AdCode - Create Scene",
     name: "createScene",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     subtitle:

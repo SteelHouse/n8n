@@ -11,7 +11,7 @@ export class ReadAndOutputAdCode implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - AdCode - Read and Output AdCode",
     name: "readAndOutputAdCode",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     subtitle: "Read AdCode from Redis",

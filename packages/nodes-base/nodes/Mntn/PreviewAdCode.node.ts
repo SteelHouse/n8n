@@ -10,7 +10,7 @@ export class PreviewAdCode implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - AdCode - Preview AdCode",
     name: "previewAdCode",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     subtitle: '{{$parameter["elementId"] || "Element"}}',

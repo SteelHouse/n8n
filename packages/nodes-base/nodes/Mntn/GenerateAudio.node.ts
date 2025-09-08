@@ -11,7 +11,7 @@ export class GenerateAudio implements INodeType {
   description: INodeTypeDescription = {
     displayName: "MNTN - Generate Audio",
     name: "generateAudio",
-    icon: "file:icons/mntn.svg",
+    icon: "file:mntn.svg",
     group: ["transform"],
     version: 1,
     description:

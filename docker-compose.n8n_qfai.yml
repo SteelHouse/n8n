@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  neon-local:
+    build:
+      context: https://github.com/SteelHouse/creative-suite-neon-local.git#reuse-branch-name:app/
+      dockerfile: Dockerfile  
+    container_name: neon_local
+    ports:
+      - '5432:5432'
+    environment:
+      NEON_API_KEY: ${NEON_API_KEY}
+      NEON_PROJECT_ID: ${NEON_PROJECT_ID}
+      DRIVER: postgres
+      DELETE_BRANCH: false  # Keep branches persistent
+      REUSE_EXISTING_BRANCHES: true
+    volumes:
+      - ./.neon_local/:/tmp/.neon_local
+      - ./.git/HEAD:/tmp/.git/HEAD:ro,consistent
+      - postgres_data:/var/lib/postgresql/data  # Persist database data
+    restart: unless-stopped
+    networks:
+      - neon-network
+
+  n8n_qfai:
+    # Your custom Docker Hub image
+    image: hamzaelkmntn/n8n_qfai:latest
+    container_name: n8n_qfai
+    ports:
+      - '5678:5678'
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_AUTH_USER:-admin@mountain.com}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_AUTH_PASSWORD:-quikFame@mntn!25}
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE:-America/New_York}
+      - N8N_LOG_LEVEL=debug
+      - NODE_ENV=development
+      - N8N_CUSTOM_EXTENSIONS=${N8N_CUSTOM_EXTENSIONS:-/home/node/.n8n/custom}
+      - DATABASE_TYPE=postgresdb
+      - DATABASE_HOST=neon-local
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=viva
+      - DATABASE_USER=${DATABASE_USER:-postgres}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_SCHEMA=n8n
+      - N8N_PAYLOAD_SIZE_MAX=104857600
+      - PUBLIC_URL=${PUBLIC_URL:-http://localhost:5678}
+      - CREATIVE_SUITE_API_URL=${CREATIVE_SUITE_API_URL:-http://host.docker.internal:3001}
+      - CREATIVE_SUITE_API_KEY=${CREATIVE_SUITE_API_KEY}
+      # Pre-configure Creative Suite credentials for team use
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-qeiatchejnxfbeyavosdddjfzhjdvsnzqaenpccwzcbffgzkjrovcqditufrelxz}
+      # Ensure database persistence
+      - DB_POSTGRESDB_POOL_SIZE=5
+      - N8N_SKIP_WEBHOOK_DEREGISTRATION_SHUTDOWN=true
+      # Prevent n8n from recreating schema on startup
+      - N8N_DATABASE_LOGGING_ENABLED=false
+      # Disable SSL certificate verification for local development
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./packages/n8n-nodes-creative-suite/dist:/home/node/.n8n/custom
+    restart: unless-stopped
+    depends_on:
+      - neon-local
+    networks:
+      - neon-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  n8n-webhook-proxy:
+    image: nginx:alpine
+    container_name: n8n-webhook-proxy
+    ports:
+      - '5679:80'
+    volumes:
+      - ./packages/n8n-nodes-creative-suite/docker/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - n8n_qfai
+    networks:
+      - neon-network
+    restart: unless-stopped
+
+volumes:
+  n8n_data:
+  postgres_data:
+
+networks:
+  neon-network:
+    driver: bridge

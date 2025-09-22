@@ -43,7 +43,7 @@ services:
       - DATABASE_NAME=viva
       - DATABASE_USER=${DATABASE_USER:-postgres}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - DATABASE_SCHEMA=n8n
+      - DATABASE_SCHEMA=n8n_qfai
       - N8N_PAYLOAD_SIZE_MAX=104857600
       - PUBLIC_URL=${PUBLIC_URL:-http://localhost:5678}
       - CREATIVE_SUITE_API_URL=${CREATIVE_SUITE_API_URL:-http://host.docker.internal:3001}

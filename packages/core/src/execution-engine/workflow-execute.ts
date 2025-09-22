@@ -298,6 +298,7 @@ export class WorkflowExecute {
 
 	/**
 	 * Finds nodes that are ready for execution (have all required input data)
+	 * Enhanced for V2 with intelligent batching for sub-workflow execution
 	 *
 	 * @param workflow - The workflow being executed
 	 * @returns Object with readyToExecute and remainingStack arrays
@@ -312,6 +313,9 @@ export class WorkflowExecute {
 		// Snapshot current stack to avoid concurrent modification
 		const currentStack = [...this.runExecutionData.executionData!.nodeExecutionStack];
 		this.runExecutionData.executionData!.nodeExecutionStack = [];
+
+		// Group nodes by batching key for intelligent parallel execution
+		const nodeBatches = new Map<string, IExecuteData[]>();
 
 		for (const executionData of currentStack) {
 			// Check if node has required input data without modifying the stack
@@ -335,13 +339,230 @@ export class WorkflowExecute {
 			}
 
 			if (hasRequiredData) {
-				readyToExecute.push(executionData);
+				// Create batching key for intelligent grouping
+				const batchingKey = this.createNodeBatchingKey(executionData.node, workflow);
+				
+				if (!nodeBatches.has(batchingKey)) {
+					nodeBatches.set(batchingKey, []);
+				}
+				nodeBatches.get(batchingKey)!.push(executionData);
 			} else {
 				remainingStack.push(executionData);
 			}
 		}
 
+		// Convert batches to batched execution data for sub-workflows
+		for (const [batchingKey, batch] of nodeBatches) {
+			if (batch.length === 1) {
+				// Single node, no batching needed
+				readyToExecute.push(batch[0]);
+			} else if (this.shouldBatchNodes(batch[0].node)) {
+				// Multiple nodes that can be batched (e.g., ExecuteWorkflow in 'each' mode)
+				const batchedExecutionData = this.createBatchedExecutionData(batch);
+				readyToExecute.push(batchedExecutionData);
+			} else {
+				// Multiple nodes that should execute in parallel individually
+				readyToExecute.push(...batch);
+			}
+		}
+
 		return { readyToExecute, remainingStack };
+	}
+
+	/**
+	 * Creates a batching key for grouping similar nodes together
+	 * This enables intelligent parallel execution for sub-workflows
+	 *
+	 * @param node - The node to create a batching key for
+	 * @param workflow - The workflow being executed
+	 * @returns A string key that groups similar nodes together
+	 */
+	private createNodeBatchingKey(node: INode, workflow: Workflow): string {
+		// For ExecuteWorkflow nodes, group by workflow ID and parameters
+		if (node.type === 'n8n-nodes-base.executeWorkflow') {
+			const workflowId = node.parameters.workflowId;
+			const mode = node.parameters.mode || 'each';
+			// Include critical parameters that affect execution
+			const options = node.parameters.options as IDataObject | undefined;
+			const keyParams = JSON.stringify({
+				workflowId,
+				mode,
+				// Add other critical parameters that should prevent batching
+				waitForSubWorkflow: options?.waitForSubWorkflow,
+			});
+			return `executeWorkflow:${keyParams}`;
+		}
+
+		// For Switch nodes, each instance should be separate (no batching)
+		// Use unique keys to prevent any accidental batching
+		if (node.type === 'n8n-nodes-base.switch') {
+			return `switch:${node.id}:${Date.now()}:${Math.random()}`;
+		}
+
+		// For routing nodes that split data, prevent batching
+		if (node.type === 'n8n-nodes-base.if' || node.type === 'n8n-nodes-base.merge') {
+			return `routing:${node.type}:${node.id}:${Date.now()}:${Math.random()}`;
+		}
+
+		// For Code nodes, group by code content and mode
+		if (node.type === 'n8n-nodes-base.code') {
+			const jsCode = node.parameters.jsCode as string | undefined;
+			const pythonCode = node.parameters.pythonCode as string | undefined;
+			const code = jsCode || pythonCode || '';
+			const mode = node.parameters.mode || 'runOnceForEachItem';
+			const codeHash = this.hashString(code);
+			return `code:${mode}:${codeHash}`;
+		}
+
+		// Default: group by node type and critical parameters
+		const criticalParams = this.extractCriticalParameters(node);
+		return `${node.type}:${JSON.stringify(criticalParams)}`;
+	}
+
+	/**
+	 * Determines if nodes of this type should be batched together for execution
+	 *
+	 * @param node - The node to check
+	 * @returns true if nodes should be batched, false if they should execute individually
+	 */
+	private shouldBatchNodes(node: INode): boolean {
+		// ExecuteWorkflow nodes in 'each' mode benefit from batching
+		if (node.type === 'n8n-nodes-base.executeWorkflow') {
+			const mode = node.parameters.mode || 'each';
+			const options = node.parameters.options as IDataObject | undefined;
+			const waitForSubWorkflow = options?.waitForSubWorkflow !== false;
+			// Only batch if in 'each' mode and waiting for sub-workflow completion
+			return mode === 'each' && waitForSubWorkflow;
+		}
+
+		// Code nodes in 'runOnceForEachItem' mode can be batched if they have the same code
+		if (node.type === 'n8n-nodes-base.code') {
+			const mode = node.parameters.mode || 'runOnceForEachItem';
+			return mode === 'runOnceForEachItem';
+		}
+
+		// Switch nodes should NEVER be batched - they need individual item processing
+		if (node.type === 'n8n-nodes-base.switch') {
+			return false;
+		}
+
+		// HTTP Request nodes can potentially be batched if they have identical configurations
+		if (node.type === 'n8n-nodes-base.httpRequest') {
+			// Only batch if not using individual item data in URL or parameters
+			return false; // For now, keep them separate for safety
+		}
+
+		// Most other nodes should not be batched
+		return false;
+	}
+
+	/**
+	 * Creates a batched execution data that combines multiple individual executions
+	 * This is the key optimization that prevents sub-workflows from running multiple times
+	 *
+	 * @param batch - Array of execution data to batch together
+	 * @returns A single execution data that represents the batched execution
+	 */
+	private createBatchedExecutionData(batch: IExecuteData[]): IExecuteData {
+		if (batch.length === 0) {
+			throw new ApplicationError('Cannot create batched execution data from empty batch');
+		}
+
+		const firstExecution = batch[0];
+		const node = firstExecution.node;
+
+		// Combine all input data from the batch
+		const combinedData: ITaskDataConnections = { main: [] };
+		
+		// Find the maximum number of connections across all executions
+		let maxConnections = 0;
+		for (const execution of batch) {
+			if (execution.data.main) {
+				maxConnections = Math.max(maxConnections, execution.data.main.length);
+			}
+		}
+
+		// Initialize combined data structure
+		for (let i = 0; i < maxConnections; i++) {
+			combinedData.main[i] = [];
+		}
+
+		// Combine data from all executions
+		for (const execution of batch) {
+			if (execution.data.main) {
+				for (let connectionIndex = 0; connectionIndex < execution.data.main.length; connectionIndex++) {
+					const connectionData = execution.data.main[connectionIndex];
+					if (connectionData && connectionData.length > 0 && combinedData.main[connectionIndex]) {
+						combinedData.main[connectionIndex]?.push(...connectionData);
+					}
+				}
+			}
+		}
+
+		// Create metadata to track the batching
+		// Use a more flexible approach since ITaskMetadata has limited fields
+		const batchMetadata = {
+			batchSize: batch.length,
+			batchedNodeIds: batch.map(exec => exec.node.id),
+			originalExecutions: batch.length,
+		} as any;
+
+		return {
+			node,
+			data: combinedData,
+			source: firstExecution.source,
+			metadata: batchMetadata,
+		};
+	}
+
+	/**
+	 * Extracts critical parameters from a node that affect execution behavior
+	 * Used for creating batching keys
+	 *
+	 * @param node - The node to extract parameters from
+	 * @returns Object containing critical parameters
+	 */
+	private extractCriticalParameters(node: INode): Record<string, any> {
+		const critical: Record<string, any> = {};
+		
+		// Common critical parameters that affect execution
+		const criticalKeys = [
+			'mode', 'executeOnce', 'batchSize', 
+			'continueOnFail', 'alwaysOutputData', 'onError'
+		];
+
+		for (const key of criticalKeys) {
+			if (node.parameters[key] !== undefined) {
+				critical[key] = node.parameters[key];
+			}
+		}
+
+		// Handle nested options separately with proper typing
+		if (node.parameters.options) {
+			const options = node.parameters.options as IDataObject;
+			if (options.waitForSubWorkflow !== undefined) {
+				critical['options.waitForSubWorkflow'] = options.waitForSubWorkflow;
+			}
+		}
+
+		return critical;
+	}
+
+	/**
+	 * Simple hash function for creating consistent string hashes
+	 *
+	 * @param str - String to hash
+	 * @returns Hash value as string
+	 */
+	private hashString(str: string): string {
+		let hash = 0;
+		if (str.length === 0) return hash.toString();
+		for (let i = 0; i < str.length; i++) {
+			const char = str.charCodeAt(i);
+			hash = ((hash << 5) - hash) + char;
+			hash = hash & hash; // Convert to 32-bit integer
+		}
+		return hash.toString();
 	}
 
 	/**
@@ -630,6 +851,7 @@ export class WorkflowExecute {
 
 	/**
 	 * Executes a single node in parallel mode with proper error handling and scheduling
+	 * Enhanced to handle batched ExecuteWorkflow nodes for optimal sub-workflow execution
 	 */
 	private async executeNodeInParallel(
 		workflow: Workflow,
@@ -640,6 +862,30 @@ export class WorkflowExecute {
 		let runIndex = 0;
 		if (Object.hasOwn(this.runExecutionData.resultData.runData, executionNode.name)) {
 			runIndex = this.runExecutionData.resultData.runData[executionNode.name].length;
+		}
+
+		// Handle batched ExecuteWorkflow nodes - convert from 'each' to 'once' mode
+		const isBatchedExecution = (executionData.metadata as any)?.batchSize > 1;
+		let modifiedNode = executionNode;
+		
+		if (isBatchedExecution && executionNode.type === 'n8n-nodes-base.executeWorkflow') {
+			const originalMode = executionNode.parameters.mode || 'each';
+			if (originalMode === 'each') {
+				// Create a modified node that executes in 'once' mode for batched execution
+				modifiedNode = {
+					...executionNode,
+					parameters: {
+						...executionNode.parameters,
+						mode: 'once', // Change to 'once' mode to process all items together
+					},
+				};
+				
+				Logger.debug(`Batching ExecuteWorkflow node "${executionNode.name}" - converting from 'each' to 'once' mode`, {
+					node: executionNode.name,
+					workflowId: workflow.id,
+					batchSize: (executionData.metadata as any)?.batchSize,
+				});
+			}
 		}
 
 		const taskStartedData: ITaskStartedData = {
@@ -671,10 +917,18 @@ export class WorkflowExecute {
 			);
 		}
 		executionData.data = newTaskDataConnections;
+		
+		// Update execution data to use the modified node
+		const modifiedExecutionData = {
+			...executionData,
+			node: modifiedNode,
+		};
 
 		Logger.debug(`Start executing node "${executionNode.name}"`, {
 			node: executionNode.name,
 			workflowId: workflow.id,
+			isBatched: isBatchedExecution,
+			batchSize: (executionData.metadata as any)?.batchSize,
 		});
 
 		await hooks.runHook('nodeExecuteBefore', [executionNode.name, taskStartedData]);
@@ -685,7 +939,7 @@ export class WorkflowExecute {
 		try {
 			const runNodeData = await this.runNode(
 				workflow,
-				executionData,
+				modifiedExecutionData, // Use the modified execution data with potential node changes
 				this.runExecutionData,
 				runIndex,
 				this.additionalData,
@@ -739,6 +993,38 @@ export class WorkflowExecute {
 
 		// Node executed successfully
 		nodeSuccessData = this.assignPairedItems(nodeSuccessData, executionData);
+
+		// V2 Enhancement: Smart sub-workflow result handling for parallel execution
+		if (executionNode.type === 'n8n-nodes-base.executeWorkflow' && nodeSuccessData && nodeSuccessData[0]) {
+			const inputItemCount = executionData.data.main?.[0]?.length || 0;
+			const outputItemCount = nodeSuccessData[0].length;
+			const mode = executionNode.parameters.mode || 'each';
+			
+			// For 'each' mode: return only the latest/final result from sub-workflow
+			// This handles sub-workflows with internal branching that should return one final result
+			if (mode === 'each' && outputItemCount > inputItemCount && inputItemCount > 0) {
+				Logger.debug(`V2 Sub-workflow Result Optimization: "${executionNode.name}"`, {
+					mode,
+					inputItems: inputItemCount,
+					outputItems: outputItemCount,
+					action: 'extracting_latest_results_from_sub_workflow',
+					workflowId: workflow.id,
+				});
+				
+				// Strategy: Take the LAST N items as the final results (where N = input count)
+				// This assumes the sub-workflow's final outputs are at the end of the result array
+				const finalResults = nodeSuccessData[0].slice(-inputItemCount);
+				
+				Logger.debug(`V2 Sub-workflow Final Results: "${executionNode.name}"`, {
+					originalOutputs: outputItemCount,
+					finalResults: finalResults.length,
+					extractedFromEnd: true,
+					workflowId: workflow.id,
+				});
+				
+				nodeSuccessData[0] = finalResults;
+			}
+		}
 
 		taskData.data = {
 			main: nodeSuccessData,

@@ -244,6 +244,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * @smithy/util-uri-escape 4.1.0
 * @smithy/util-utf8 4.1.0
 * @smithy/util-waiter 4.1.0
+* @smithy/uuid 1.1.0
 * @sqlite.org/sqlite-wasm 3.50.4-build1
 * @swc/helpers 0.5.17, Copyright 2024 SWC contributors.
 * @xata.io/client 0.28.4
@@ -253,6 +254,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * axios-retry 4.5.0, Copyright 2019 Softonic International S.A.
 * b4a 1.6.7
 * bare-events 2.6.1
+* baseline-browser-mapping 2.8.29
 * better-ajv-errors 1.2.0, Copyright 2018 Atlassian Pty Ltd
 * blob-util 2.0.2
 * bser 2.1.1
@@ -273,6 +275,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * ejs 3.1.10
 * eslint-visitor-keys 4.2.1
 * esm-resolve 1.0.11
+* events-universal 1.0.1
 * expect-type 1.2.2
 * fake-indexeddb 6.2.2
 * fb-watchman 2.0.2
@@ -376,7 +379,11 @@ The n8n software includes open source packages, libraries, and modules, each of 
 
 ## BSD-3-Clause
 
+* @hapi/address 5.1.1, Copyright (c) 2019-2022, Sideway, Inc. and Project contributors. All rights reserved.
+* @hapi/formula 3.0.2, Copyright (c) 2019-2020, Sideway. Inc, and project contributors. All rights reserved.
 * @hapi/hoek 9.3.0, Copyright (c) 2011-2020, Sideway Inc, and project contributors  . Copyright (c) 2011-2014, Walmart  . Copyright (c) 2011, Yahoo Inc.
+* @hapi/pinpoint 2.0.1, Copyright (c) 2019-2020, Sideway. Inc, and project contributors
+* @hapi/tlds 1.1.4, Copyright (c) 2019-2022, Sideway, Inc. and Project contributors. All rights reserved.
 * @hapi/topo 5.1.0, Copyright (c) 2012-2020, Sideway Inc, and project contributors  . Copyright (c) 2012-2014, Walmart.  . All rights reserved.
 * @js-joda/core 5.6.5, Copyright (c) 2016, Philipp Thürwächter & Pattrick Hüper.  . All rights reserved..  . Redistribution and use in source and binary forms, with or without. modification, are permitted provided that the following conditions are met:.  .  * Redistributions of source code must retain the above copyright notice,.    this list of conditions and the following disclaimer..  .  * Redistributions in binary form must reproduce the above copyright notice,.    this list of conditions and the following disclaimer in the documentation.    and/or other materials provided with the distribution..  .  * Neither the name of js-joda nor the names of its contributors.    may be used to endorse or promote products derived from this software.    without specific prior written permission..  . THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS. "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT. LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR. A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR. CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,. EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,. PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR. PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF. LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING. NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS. SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * @protobufjs/aspromise 1.1.2, Copyright (c) 2016, Daniel Wirtz  All rights reserved.
@@ -743,6 +750,8 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * @babel/types 7.28.4, Copyright (c) 2014-present Sebastian McKenzie and other contributors
 * @bcoe/v8-coverage 1.0.2, Copyright © 2015-2017 Charles Samborski
 * @browserbasehq/stagehand 1.14.0, Copyright (c) 2024 Browserbase Inc.
+* @cacheable/memory 2.0.5
+* @cacheable/utils 2.3.1
 * @cfworker/json-schema 4.1.1
 * @chromatic-com/storybook 3.2.7, Copyright (c) 2023 Storybook contributors
 * @clack/core 0.5.0, Copyright (c) Nate Moore
@@ -833,6 +842,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * @jsdevtools/ono 7.1.3, Copyright (c) 2015 James Messinger
 * @jsep-plugin/assignment 1.3.0, Copyright (c) 2013 Stephen Oney, https://ericsmekens.github.io/jsep/
 * @jsep-plugin/regex 1.0.4, Copyright (c) 2013 Stephen Oney, https://ericsmekens.github.io/jsep/
+* @keyv/bigmap 1.3.0, Copyright (c) Jared Wray
 * @keyv/serialize 1.1.0, Copyright (c) 2017-2021 Luke Childs. Copyright (c) 2021-2022 Jared Wray
 * @kurkle/color 0.3.4, Copyright (c) 2018-2024 Jukka Kurkela
 * @kwsites/file-exists 1.1.1, Copyright (c) 2015 Steve King
@@ -903,6 +913,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * @parcel/watcher-darwin-arm64 2.5.1, Copyright (c) 2017-present Devon Govett
 * @petamoriken/float16 3.9.2, Copyright (c) 2017-2025 Kenta Moriuchi
 * @pinia/testing 0.1.7, Copyright (c) 2019-present Eduardo San Martin Morote
+* @pinojs/redact 0.4.0, Copyright (c) 2025 pinojs contributors
 * @pkgjs/parseargs 0.11.0
 * @qdrant/openapi-typescript-fetch 1.2.6, Copyright 2021 Ajai Shankar
 * @redis/bloom 1.2.0
@@ -922,6 +933,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * @rollup/rollup-darwin-arm64 4.50.0
 * @rtsao/scc 1.1.0, Copyright (c) 2019 Ryan Tsao
 * @rushstack/node-core-library 5.14.0, Copyright (c) Microsoft Corporation. All rights reserved.
+* @rushstack/problem-matcher 0.1.1, Copyright (c) Microsoft Corporation. All rights reserved.
 * @rushstack/rig-package 0.5.3, Copyright (c) Microsoft Corporation. All rights reserved.
 * @rushstack/terminal 0.15.4, Copyright (c) Microsoft Corporation. All rights reserved.
 * @rushstack/ts-command-line 5.0.2, Copyright (c) Microsoft Corporation. All rights reserved.
@@ -942,7 +954,9 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * @sevinf/maybe 0.5.0, Copyright (c) 2019 Sergey Tatarintsev
 * @sinclair/typebox 0.27.8, Copyright (c) 2017-2023 Haydn Paterson (sinclair) <haydn.developer@gmail.com>
 * @sindresorhus/merge-streams 4.0.0, Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+* @so-ric/colorspace 1.1.6, Copyright (c) 2015 Arnout Kazemier, Martijn Swaagman, the Contributors.
 * @sqltools/formatter 1.2.5, Copyright (c) 2019-present Matheus Teixeira
+* @standard-schema/spec 1.0.0, Copyright (c) 2024 Colin McDonnell
 * @storybook/addon-a11y 8.6.14
 * @storybook/addon-actions 8.6.14
 * @storybook/addon-backgrounds 8.6.14
@@ -1631,6 +1645,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * functions-have-names 1.2.3, Copyright (c) 2019 Jordan Harband
 * generate-function 2.3.1, Copyright (c) 2014 Mathias Buus
 * generate-schema 2.6.0, Copyright (c) 2015 Nijiko Yonskai
+* generator-function 2.0.1, Copyright (c) 2015 Tiancheng “Timothy” Gu
 * generic-pool 3.9.0, Copyright (c) 2010-2016 James Cooper &lt;james@bitmechanic.com&gt;
 * gensync 1.0.0-beta.2, Copyright 2018 Logan Smyth <loganfsmyth@gmail.com>
 * get-amd-module-type 6.0.1, Copyright (c) 2022 Dependents
@@ -1673,6 +1688,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * hash-sum 2.0.0, Copyright © 2014 Nicolas Bevacqua
 * hash.js 1.1.7, Copyright Fedor Indutny, 2014.
 * hasha 5.2.2, Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+* hashery 1.2.0, Copyright (c) 2025 Jared Wray
 * hasown 2.0.2, Copyright (c) Jordan Harband and contributors
 * he 1.2.0, Copyright Mathias Bynens <https://mathiasbynens.be/>
 * header-case 2.0.4, Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
@@ -2216,6 +2232,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * pure-rand 6.1.0, Copyright (c) 2018 Nicolas DUBIEN
 * python-struct 1.1.3, Copyright (c) 2016 Daniel Cohen Gindi
 * q 2.0.3, Copyright 2009–2014 Kristopher Michael Kowal. All rights reserved.. Permission is hereby granted, free of charge, to any person obtaining a copy. of this software and associated documentation files (the "Software"), to. deal in the Software without restriction, including without limitation the. rights to use, copy, modify, merge, publish, distribute, sublicense, and/or. sell copies of the Software, and to permit persons to whom the Software is. furnished to do so, subject to the following conditions:
+* qified 0.5.2
 * qrcode.vue 3.6.0, Copyright (c) 2017 scope.wu
 * quansync 0.2.11, Copyright (c) 2025-PRESENT Anthony Fu <https://github.com/antfu> and Kevin Deng <https://github.com/sxzz>
 * querystring-es3 0.2.1
@@ -2278,6 +2295,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * resolve-pkg-maps 1.0.0, Copyright (c) Hiroki Osame <hiroki.osame@gmail.com>
 * resolve.exports 2.0.3, Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
 * restore-cursor 3.1.0, Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+* ret 0.5.0, Copyright (C) 2011 by fent
 * retry 0.13.1, Copyright (c) 2011:. Tim Koschützki (tim@debuggable.com). Felix Geisendörfer (felix@debuggable.com)
 * retry-request 7.0.2, Copyright (c) 2015 Stephen Sawchuk
 * reusify 1.1.0, Copyright (c) 2015-2024 Matteo Collina
@@ -2298,6 +2316,7 @@ The n8n software includes open source packages, libraries, and modules, each of 
 * safe-buffer 5.1.2, Copyright (c) Feross Aboukhadijeh
 * safe-push-apply 1.0.0, Copyright (c) 2024 Jordan Harband
 * safe-regex-test 1.1.0, Copyright (c) 2022 Jordan Harband
+* safe-regex2 5.0.0
 * safe-stable-stringify 2.5.0, Copyright (c) Ruben Bridgewater
 * safer-buffer 2.1.2, Copyright (c) 2018 Nikita Skovoroda <chalkerx@gmail.com>
 * samlify 2.10.0, Copyright (c) 2016-present Tony Ngan
@@ -5284,18 +5303,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ## BSD-3-Clause License Text
 
 ```
-Copyright (c) 2011-2020, Sideway Inc, and project contributors  
-Copyright (c) 2011-2014, Walmart  
-Copyright (c) 2011, Yahoo Inc.
-
+Copyright (c) 2019-2022, Sideway, Inc. and Project contributors
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-* The names of any contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * The names of any contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS OFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
 ## BlueOak-1.0.0 License Text

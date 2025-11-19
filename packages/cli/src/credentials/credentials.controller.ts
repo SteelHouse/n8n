@@ -15,7 +15,6 @@ import {
 import {
 	Delete,
 	Get,
-	Licensed,
 	Patch,
 	Post,
 	Put,
@@ -296,12 +295,17 @@ export class CredentialsController {
 		return true;
 	}
 
-	@Licensed('feat:sharing')
 	@Put('/:credentialId/share')
 	@ProjectScope('credential:share')
 	async shareCredentials(req: CredentialRequest.Share) {
 		const { credentialId } = req.params;
 		const { shareWithIds } = req.body;
+
+		this.logger.debug('Share credentials endpoint called', { 
+			credentialId, 
+			shareWithIds,
+			userId: req.user.id 
+		});
 
 		if (
 			!Array.isArray(shareWithIds) ||
@@ -372,6 +376,12 @@ export class CredentialsController {
 			sharer: req.user,
 			newShareeIds: projectsRelations.map((pr) => pr.userId),
 			credentialsName: credential.name,
+		});
+
+		this.logger.debug('Credentials shared successfully', {
+			credentialId,
+			sharedWith: newShareeIds,
+			removed: amountRemoved,
 		});
 	}
 

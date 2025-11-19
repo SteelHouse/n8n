@@ -237,7 +237,7 @@ export class FrontendService {
 				workflowDiffs: false,
 				projects: {
 					team: {
-						limit: 0,
+						limit: -1, // Always allow unlimited team projects for self-hosted
 					},
 				},
 			},
@@ -364,6 +364,11 @@ export class FrontendService {
 			advancedPermissions: this.license.isAdvancedPermissionsLicensed(),
 			apiKeyScopes: this.license.isApiKeyScopesEnabled(),
 			workflowDiffs: this.licenseState.isWorkflowDiffsLicensed(),
+			projects: {
+				team: {
+					limit: -1, // Always allow unlimited team projects for self-hosted
+				},
+			},
 		});
 
 		if (this.license.isLdapEnabled()) {
@@ -386,11 +391,11 @@ export class FrontendService {
 			});
 		}
 
-		if (this.license.isVariablesEnabled()) {
-			this.settings.variables.limit = this.license.getVariablesLimit();
-		}
+		// Always enable unlimited variables for self-hosted
+		this.settings.variables.limit = -1;
 
-		if (this.globalConfig.workflowHistory.enabled && this.license.isWorkflowHistoryLicensed()) {
+		if (this.globalConfig.workflowHistory.enabled) {
+			// Always enable workflow history for self-hosted
 			Object.assign(this.settings.workflowHistory, {
 				pruneTime: getWorkflowHistoryPruneTime(),
 				licensePruneTime: getWorkflowHistoryLicensePruneTime(),
@@ -423,9 +428,10 @@ export class FrontendService {
 
 		this.settings.binaryDataMode = this.binaryDataConfig.mode;
 
-		this.settings.enterprise.projects.team.limit = this.license.getTeamProjectLimit();
+		// Always allow unlimited team projects for self-hosted
+		this.settings.enterprise.projects.team.limit = -1;
 
-		this.settings.folders.enabled = this.license.isFoldersEnabled();
+		this.settings.folders.enabled = true; // Always enable folders for self-hosted
 
 		// Refresh evaluation settings
 		this.settings.evaluation.quota = this.licenseState.getMaxWorkflowsWithEvaluations();

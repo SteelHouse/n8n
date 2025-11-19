@@ -23,11 +23,7 @@ export = {
 			res: express.Response,
 		): Promise<ImportResult | StatusResult | Promise<express.Response>> => {
 			const sourceControlPreferencesService = Container.get(SourceControlPreferencesService);
-			if (!isSourceControlLicensed()) {
-				return res
-					.status(401)
-					.json({ status: 'Error', message: 'Source Control feature is not licensed' });
-			}
+			// Source control always enabled for self-hosted
 			if (!sourceControlPreferencesService.isSourceControlConnected()) {
 				return res
 					.status(400)

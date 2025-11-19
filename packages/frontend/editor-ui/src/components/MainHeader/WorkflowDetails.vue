@@ -200,11 +200,6 @@ const workflowMenuItems = computed<Array<ActionDropdownItem<WORKFLOW_MENU_ACTION
 		actions.push({
 			id: WORKFLOW_MENU_ACTIONS.PUSH,
 			label: locale.baseText('menuActions.push'),
-			disabled:
-				!sourceControlStore.isEnterpriseSourceControlEnabled ||
-				!onWorkflowPage.value ||
-				onExecutionsTab.value ||
-				sourceControlStore.preferences.branchReadOnly,
 		});
 	}
 

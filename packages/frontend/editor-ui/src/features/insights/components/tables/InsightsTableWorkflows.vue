@@ -15,9 +15,6 @@ import { VIEWS } from '@/constants';
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { type RouteLocationRaw, type LocationQueryRaw } from 'vue-router';
 
-const InsightsPaywall = defineAsyncComponent(
-	async () => await import('@/features/insights/components/InsightsPaywall.vue'),
-);
 
 const props = defineProps<{
 	data: InsightsByWorkflow;
@@ -49,7 +46,7 @@ const sampleData: InsightsByWorkflow = {
 	count: sampleWorkflows.length,
 };
 
-const tableData = computed(() => (props.isDashboardEnabled ? props.data : sampleData));
+const tableData = computed(() => props.data);
 const rows = computed(() => tableData.value.data);
 
 const headers = ref<Array<TableHeader<Item>>>([
@@ -57,7 +54,7 @@ const headers = ref<Array<TableHeader<Item>>>([
 		title: 'Name',
 		key: 'workflowName',
 		width: 400,
-		disableSort: !props.isDashboardEnabled,
+		disableSort: false,
 	},
 	{
 		title: i18n.baseText('insights.banner.title.total'),
@@ -65,7 +62,7 @@ const headers = ref<Array<TableHeader<Item>>>([
 		value(row) {
 			return row.total.toLocaleString('en-US');
 		},
-		disableSort: !props.isDashboardEnabled,
+		disableSort: false,
 	},
 	{
 		title: i18n.baseText('insights.banner.title.failed'),
@@ -73,7 +70,7 @@ const headers = ref<Array<TableHeader<Item>>>([
 		value(row) {
 			return row.failed.toLocaleString('en-US');
 		},
-		disableSort: !props.isDashboardEnabled,
+		disableSort: false,
 	},
 	{
 		title: i18n.baseText('insights.banner.title.failureRate'),
@@ -84,7 +81,7 @@ const headers = ref<Array<TableHeader<Item>>>([
 				INSIGHTS_UNIT_MAPPING.failureRate(row.failureRate)
 			);
 		},
-		disableSort: !props.isDashboardEnabled,
+		disableSort: false,
 	},
 	{
 		title: i18n.baseText('insights.banner.title.timeSaved'),
@@ -95,7 +92,7 @@ const headers = ref<Array<TableHeader<Item>>>([
 				INSIGHTS_UNIT_MAPPING.timeSaved(row.timeSaved)
 			);
 		},
-		disableSort: !props.isDashboardEnabled,
+		disableSort: false,
 	},
 	{
 		title: i18n.baseText('insights.banner.title.averageRunTime'),
@@ -106,7 +103,7 @@ const headers = ref<Array<TableHeader<Item>>>([
 				INSIGHTS_UNIT_MAPPING.averageRunTime(row.averageRunTime)
 			);
 		},
-		disableSort: !props.isDashboardEnabled,
+		disableSort: false,
 	},
 	{
 		title: i18n.baseText('insights.dashboard.table.projectName'),
@@ -206,11 +203,6 @@ watch(sortBy, (newValue) => {
 					</div>
 				</N8nTooltip>
 				<template v-else> - </template>
-			</template>
-			<template v-if="!isDashboardEnabled" #cover>
-				<div :class="$style.blurryCover">
-					<InsightsPaywall />
-				</div>
 			</template>
 		</N8nDataTableServer>
 	</div>

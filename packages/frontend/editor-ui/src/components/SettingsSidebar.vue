@@ -62,7 +62,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 			icon: 'vault',
 			label: i18n.baseText('settings.externalSecrets.title'),
 			position: 'top',
-			available: false, // Hidden - Enterprise feature
+			available: canUserAccessRouteByName(VIEWS.EXTERNAL_SECRETS_SETTINGS), // Always available for self-hosted
 			route: { to: { name: VIEWS.EXTERNAL_SECRETS_SETTINGS } },
 		},
 
@@ -71,7 +71,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 			icon: 'git-branch',
 			label: i18n.baseText('settings.sourceControl.title'),
 			position: 'top',
-			available: false, // Hidden - Enterprise feature
+			available: canUserAccessRouteByName(VIEWS.SOURCE_CONTROL), // Always available for self-hosted
 			route: { to: { name: VIEWS.SOURCE_CONTROL } },
 		},
 		{
@@ -95,7 +95,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 			icon: 'waypoints',
 			label: i18n.baseText('mainSidebar.workersView'),
 			position: 'top',
-			available: false, // Hidden - Enterprise feature
+			available: canUserAccessRouteByName(VIEWS.WORKER_VIEW), // Always available for self-hosted
 			route: { to: { name: VIEWS.WORKER_VIEW } },
 		},
 	];
@@ -105,7 +105,7 @@ const sidebarMenuItems = computed<IMenuItem[]>(() => {
 		icon: 'log-in',
 		label: i18n.baseText('settings.log-streaming'),
 		position: 'top',
-		available: false, // Hidden - Enterprise feature
+		available: canUserAccessRouteByName(VIEWS.LOG_STREAMING_SETTINGS), // Always available for self-hosted
 		route: { to: { name: VIEWS.LOG_STREAMING_SETTINGS } },
 	});
 

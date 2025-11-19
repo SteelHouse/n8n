@@ -15,27 +15,17 @@ const goToUpgrade = () => {
 
 <template>
 	<WorkerList
-		v-if="settingsStore.isQueueModeEnabled && settingsStore.isWorkerViewAvailable"
+		v-if="settingsStore.isQueueModeEnabled"
 		data-test-id="worker-view-licensed"
 	/>
-	<n8n-action-box
-		v-else
-		data-test-id="worker-view-unlicensed"
-		:class="$style.actionBox"
-		:description="i18n.baseText('workerList.actionBox.description')"
-		:button-text="i18n.baseText('workerList.actionBox.buttonText')"
-		@click:button="goToUpgrade"
-	>
-		<template #heading>
-			<span>{{ i18n.baseText('workerList.actionBox.title') }}</span>
-		</template>
-		<template #description>
+	<div v-else :class="$style.actionBox">
+		<n8n-callout theme="info">
 			{{ i18n.baseText('workerList.actionBox.description') }}
 			<a :href="i18n.baseText('workerList.docs.url')" target="_blank">
 				{{ i18n.baseText('workerList.actionBox.description.link') }}
 			</a>
-		</template>
-	</n8n-action-box>
+		</n8n-callout>
+	</div>
 </template>
 
 <style module lang="scss">

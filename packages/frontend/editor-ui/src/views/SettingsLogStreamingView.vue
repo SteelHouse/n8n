@@ -42,7 +42,7 @@ const sortedItemKeysByLabel = computed(() => {
 
 const isLicensed = computed((): boolean => {
 	if (disableLicense.value) return false;
-	return settingsStore.isEnterpriseFeatureEnabled[EnterpriseEditionFeature.LogStreaming];
+	return true; // Always licensed for self-hosted
 });
 
 const canManageLogStreaming = computed((): boolean => {

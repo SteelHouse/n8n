@@ -97,7 +97,7 @@ const mainMenuItems = computed<IMenuItem[]>(() => [
 		position: 'bottom',
 		label: 'Admin Panel',
 		icon: 'cloud',
-		available: settingsStore.isCloudDeployment && hasPermission(['instanceOwner']),
+		available: false, // Hidden - Cloud admin feature
 	},
 	{
 		// Link to in-app pre-built agent templates, available experiment is enabled
@@ -156,6 +156,7 @@ const mainMenuItems = computed<IMenuItem[]>(() => [
 		icon: 'variable',
 		label: i18n.baseText('mainSidebar.variables'),
 		position: 'bottom',
+		available: false, // Hidden - Enterprise feature
 		route: { to: { name: VIEWS.VARIABLES } },
 	},
 	{
@@ -164,9 +165,7 @@ const mainMenuItems = computed<IMenuItem[]>(() => [
 		label: 'Insights',
 		position: 'bottom',
 		route: { to: { name: VIEWS.INSIGHTS } },
-		available:
-			settingsStore.isModuleActive('insights') &&
-			hasPermission(['rbac'], { rbac: { scope: 'insights:list' } }),
+		available: false, // Hidden - Enterprise feature
 	},
 	{
 		id: 'help',
@@ -586,7 +585,7 @@ onClickOutside(createBtn as Ref<VueInstance>, () => {
 	border-right: var(--border-width-base) var(--border-style-base) var(--color-foreground-base);
 	transition: width 150ms ease-in-out;
 	width: $sidebar-expanded-width;
-	background-color: var(--menu-background, var(--color-background-xlight));
+	background: var(--color-glass-container-40);
 
 	.logo {
 		display: flex;

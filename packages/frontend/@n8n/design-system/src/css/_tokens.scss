@@ -3,7 +3,7 @@
 @mixin theme {
 	--color-primary-h: var(--h-primary);
 	--color-primary-s: var(--s-primary);
-	--color-primary-l: 68%;
+	--color-primary-l: 45%;
 
 	// Primary tokens
 
@@ -53,28 +53,35 @@
 	--diff-del-light: #fad3d0;
 	--diff-del-faint: #ffedec;
 
-	// Text
-	--color-text-dark: var(--p-gray-740);
-	--color-text-base: var(--p-gray-540);
-	--color-text-light: var(--p-gray-420);
-	--color-text-lighter: var(--p-gray-120);
-	--color-text-xlight: var(--p-white);
+	// Text (inverted for dark theme)
+	--color-text-dark: var(--p-white);
+	--color-text-base: var(--p-gray-120);
+	--color-text-light: var(--p-gray-320);
+	--color-text-lighter: var(--p-gray-420);
+	--color-text-xlight: var(--p-gray-540);
 	--color-text-danger: var(--p-color-alt-c-480);
 
-	// Foreground
-	--color-foreground-xdark: var(--p-gray-490);
-	--color-foreground-dark: var(--p-gray-200);
-	--color-foreground-base: var(--p-gray-120);
-	--color-foreground-light: var(--p-gray-070);
-	--color-foreground-xlight: var(--p-white);
+	// Foreground (adjusted for dark theme)
+	--color-foreground-xdark: var(--p-gray-120);
+	--color-foreground-dark: var(--p-gray-320);
+	--color-foreground-base: var(--p-gray-420);
+	--color-foreground-light: var(--p-gray-540);
+	--color-foreground-xlight: var(--p-gray-670);
 
 	// Background
 	--color-background-dark: var(--p-gray-820);
-	--color-background-medium: var(--p-gray-120);
-	--color-background-base: var(--p-gray-040);
-	--color-background-light-base: var(--p-gray-025);
-	--color-background-light: var(--p-gray-010);
-	--color-background-xlight: var(--p-white);
+	--color-background-medium: var(--p-gray-740);
+	--color-background-base: var(--p-gray-670);
+	--color-background-light-base: var(--p-gray-540);
+	--color-background-light: var(--p-gray-490);
+	--color-background-xlight: var(--p-gray-420);
+	
+	// Glass morphism backgrounds
+	--color-glass-container-20: radial-gradient(162.34% 115.1% at 70.34% 91.1%, rgba(26, 201, 170, 0.06) 0%, rgba(24, 31, 37, 0) 62.23%), rgba(87, 90, 92, 0.20);
+	--color-glass-container-40: radial-gradient(91.1% 134.37% at 70.34% 91.1%, rgba(26, 201, 170, 0.12) 0%, rgba(24, 31, 37, 0) 62.23%), rgba(87, 90, 92, 0.40);
+	--color-glass-container-80: radial-gradient(91.1% 134.37% at 70.34% 91.1%, rgba(26, 201, 170, 0.3) 0%, rgba(24, 31, 37, 0) 62.23%), rgba(87, 90, 92, 0.80);
+	--color-glass-well: radial-gradient(91.1% 134.37% at 70.34% 91.1%, rgba(26, 201, 170, 0.12) 0%, rgba(24, 31, 37, 0) 62.23%), rgba(7, 10, 13, 0.5);
+	--color-glass-well-highlight: radial-gradient(91.1% 134.37% at 70.34% 91.1%, rgba(26, 201, 170, 0.24) 0%, rgba(24, 31, 37, 0) 62.23%), rgba(7, 10, 13, 0.8);
 
 	// Secondary tokens
 
@@ -84,29 +91,24 @@
 	--color-lm-chat-user-background: var(--p-color-alt-a-600);
 	--color-lm-chat-user-color: var(--color-text-xlight);
 
-	// Canvas
-	--color-canvas-background: var(--p-gray-010);
-	--color-canvas-background-h: var(--h-gray); // Used for connectors labels background
-	--color-canvas-background-s: 47%;
-	--color-canvas-background-l: 99%;
-	--color-canvas-dot: var(--p-gray-120);
-	--color-canvas-read-only-line: var(--p-gray-030);
-	--color-canvas-selected: var(--p-gray-070);
-	--color-canvas-selected-transparent: hsla(var(--h-gray), 47%, 30%, 0.1);
-	--color-canvas-label-background: hsla(
-		var(--color-canvas-background-h),
-		var(--color-canvas-background-s),
-		var(--color-canvas-background-l),
-		0.85
-	);
+	// Canvas (dark theme)
+	--color-canvas-background: var(--p-gray-820);
+	--color-canvas-background-h: var(--h-gray);
+	--color-canvas-background-s: 8%;
+	--color-canvas-background-l: 12%;
+	--color-canvas-dot: var(--p-gray-540);
+	--color-canvas-read-only-line: var(--p-gray-670);
+	--color-canvas-selected: var(--p-gray-540);
+	--color-canvas-selected-transparent: hsla(169, 77%, 45%, 0.1);
+	--color-canvas-label-background: rgba(7, 10, 13, 0.85);
 
 	// Nodes
-	--color-node-background: var(--color-background-xlight);
+	--color-node-background: var(--color-glass-container-40);
 	--color-node-executing-background: var(--color-primary-tint-3);
 	--color-node-executing-other-background: var(--color-primary-tint-3);
 	--color-node-pinned-border: var(--color-secondary);
 	--color-node-running-border: var(--color-primary);
-	--node-type-main-color: var(--p-gray-490);
+	--node-type-main-color: var(--p-gray-200);
 
 	// Sticky
 	--color-sticky-background: var(--p-color-alt-d-080);
@@ -310,14 +312,14 @@
 	--color-button-node-creator-background: var(--p-white);
 
 	// Table
-	--color-table-header-background: var(--color-background-base);
-	--color-table-row-background: var(--color-background-xlight);
-	--color-table-row-even-background: var(--color-background-light);
-	--color-table-row-hover-background: var(--color-primary-tint-3);
+	--color-table-header-background: var(--color-glass-container-40);
+	--color-table-row-background: var(--color-glass-container-20);
+	--color-table-row-even-background: var(--color-glass-container-40);
+	--color-table-row-hover-background: var(--color-glass-well-highlight);
 	--color-table-row-highlight-background: var(--color-warning-tint-1);
 
 	// Notification
-	--color-notification-background: var(--color-background-xlight);
+	--color-notification-background: var(--color-glass-container-80);
 
 	// Execution
 	--execution-card-border-new: var(--p-gray-200);
@@ -326,16 +328,16 @@
 	--execution-card-border-waiting: var(--p-color-secondary-170);
 	--execution-card-border-running: var(--p-color-alt-b-180);
 	--execution-card-border-unknown: var(--p-gray-120);
-	--execution-card-background: var(--color-foreground-xlight);
-	--execution-card-background-hover: var(--color-foreground-light);
+	--execution-card-background: var(--color-glass-container-40);
+	--execution-card-background-hover: var(--color-glass-well-highlight);
 	--execution-card-text-waiting: var(--color-secondary);
 	--execution-selector-background: var(--color-background-dark);
 	--execution-selector-text: var(--color-text-xlight);
 	--execution-select-all-text: var(--color-danger);
 
 	// NDV
-	--color-run-data-background: var(--p-gray-070);
-	--color-ndvv2-run-data-background: var(--p-gray-040);
+	--color-run-data-background: var(--color-glass-container-20);
+	--color-ndvv2-run-data-background: var(--color-glass-container-40);
 	--color-ndv-droppable-parameter: var(--color-secondary);
 	--color-ndv-droppable-parameter-background: var(--p-color-secondary-470-a-010);
 	--color-ndv-droppable-parameter-active-background: var(--p-color-alt-a-600-a-015);
@@ -348,7 +350,7 @@
 
 	// Callout
 	--color-callout-info-border: var(--color-foreground-base);
-	--color-callout-info-background: var(--color-foreground-xlight);
+	--color-callout-info-background: var(--color-glass-container-40);
 	--color-callout-info-font: var(--color-text-base);
 	--color-callout-info-icon: var(--color-text-light);
 	--color-callout-success-border: var(--color-success-light-2);
@@ -394,7 +396,7 @@
 	--color-feature-request-font: var(--p-white);
 
 	// Input Triple
-	--color-background-input-triple: var(--color-background-light);
+	--color-background-input-triple: var(--color-glass-well);
 
 	// Node error
 	--color-node-error-output-text-color: var(--color-danger);

@@ -57,8 +57,11 @@ onMounted(() => {
 
 <template>
 	<div :class="containerClasses" data-test-id="n8n-logo">
-		<LogoIcon ref="logo" :class="$style.logo" />
-		<LogoText v-if="showLogoText" :class="$style.logoText" />
+		<LogoText v-if="location === 'authView'" ref="logo" :class="$style.fullLogo" />
+		<template v-else>
+			<LogoIcon v-if="props.collapsed" ref="logo" :class="$style.logo" />
+			<LogoText v-else ref="logo" :class="$style.logoText" />
+		</template>
 		<slot />
 	</div>
 </template>
@@ -78,17 +81,10 @@ onMounted(() => {
 }
 
 .authView {
-	transform: scale(2);
 	margin-bottom: var(--spacing-xl);
 
-	.logo,
-	.logoText {
-		transform: scale(1.3) translateY(-2px);
-	}
-
-	.logoText {
-		margin-left: var(--spacing-xs);
-		margin-right: var(--spacing-3xs);
+	.fullLogo {
+		transform: scale(1.5);
 	}
 }
 

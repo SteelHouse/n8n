@@ -254,6 +254,14 @@ export class ExecuteWorkflow implements INodeType {
 				default: 'once',
 			},
 			{
+				displayName: 'Parallel Execution',
+				name: 'parallelExecution',
+				type: 'boolean',
+				default: true,
+				description:
+					'When enabled, multiple items will be processed in parallel using Promise.all() instead of sequentially. This can significantly improve performance for multiple items.',
+			},
+			{
 				displayName: 'Options',
 				name: 'options',
 				type: 'collection',
@@ -298,8 +306,88 @@ export class ExecuteWorkflow implements INodeType {
 
 		if (mode === 'each') {
 			const returnData: INodeExecutionData[][] = [];
+			const parallelExecution = this.getNodeParameter('parallelExecution', 0, false) as boolean;
 
-			for (let i = 0; i < items.length; i++) {
+			// V2 Enhancement: Parallel execution using Promise.all()
+			if (parallelExecution && items.length > 1) {
+				console.log(`🚀 PARALLEL EXECUTION: Processing ${items.length} items simultaneously with Promise.all()`);
+				
+				try {
+					// Create promises for all items to execute in parallel
+					const executionPromises = items.map(async (item, i) => {
+						const waitForSubWorkflow = this.getNodeParameter(
+							'options.waitForSubWorkflow',
+							i,
+							true,
+						) as boolean;
+						const workflowInfo = await getWorkflowInfo.call(this, source, i);
+
+						if (waitForSubWorkflow) {
+							const executionResult: ExecuteWorkflowData = await this.executeWorkflow(
+								workflowInfo,
+								[item],
+								undefined,
+								{
+									parentExecution: {
+										executionId: workflowProxy.$execution.id,
+										workflowId: workflowProxy.$workflow.id,
+									},
+								},
+							);
+							return { executionResult, itemIndex: i, workflowInfo };
+						} else {
+							const executionResult: ExecuteWorkflowData = await this.executeWorkflow(
+								workflowInfo,
+								[item],
+								undefined,
+								{
+									doNotWaitToFinish: true,
+									parentExecution: {
+										executionId: workflowProxy.$execution.id,
+										workflowId: workflowProxy.$workflow.id,
+									},
+								},
+							);
+							return { executionResult, itemIndex: i, workflowInfo };
+						}
+					});
+
+					// Execute all items in parallel using Promise.all()
+					const startTime = Date.now();
+					const results = await Promise.all(executionPromises);
+					const parallelTime = Date.now() - startTime;
+					
+					console.log(`✅ PARALLEL EXECUTION COMPLETED: ${items.length} items processed in ${parallelTime}ms`);
+
+					// Process results from parallel execution
+					for (const { executionResult, itemIndex, workflowInfo } of results) {
+						const workflowResult = executionResult.data as INodeExecutionData[][];
+
+						for (const [outputIndex, outputData] of workflowResult.entries()) {
+							for (const item of outputData) {
+								item.pairedItem = { item: itemIndex };
+								item.metadata = {
+									subExecution: {
+										executionId: executionResult.executionId,
+										workflowId: workflowInfo.id ?? currentWorkflowId,
+									},
+								};
+							}
+
+							if (returnData[outputIndex] === undefined) {
+								returnData[outputIndex] = [];
+							}
+
+							returnData[outputIndex].push(...outputData);
+						}
+					}
+				} catch (error) {
+					console.log(`❌ PARALLEL EXECUTION ERROR:`, error.message);
+					throw error;
+				}
+			} else {
+				// Sequential execution (original behavior)
+				for (let i = 0; i < items.length; i++) {
 				try {
 					const waitForSubWorkflow = this.getNodeParameter(
 						'options.waitForSubWorkflow',
@@ -385,6 +473,7 @@ export class ExecuteWorkflow implements INodeType {
 						description: error.message,
 						itemIndex: i,
 					});
+				}
 				}
 			}
 

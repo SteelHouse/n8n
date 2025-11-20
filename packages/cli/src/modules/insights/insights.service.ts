@@ -29,8 +29,8 @@ export class InsightsService {
 
 	settings() {
 		return {
-			summary: this.licenseState.isInsightsSummaryLicensed(),
-			dashboard: this.licenseState.isInsightsDashboardLicensed(),
+			summary: true, // Always enable insights summary for self-hosted
+			dashboard: true, // Always enable insights dashboard for self-hosted
 			dateRanges: this.getAvailableDateRanges(),
 		};
 	}
@@ -217,12 +217,7 @@ export class InsightsService {
 			throw new UserError('The selected date range is not available');
 		}
 
-		if (!dateRange.licensed) {
-			throw new UserError(
-				'The selected date range exceeds the maximum history allowed by your license.',
-			);
-		}
-
+		// License check removed for self-hosted instances
 		return { ...dateRange, maxAgeInDays: keyRangeToDays[dateRangeKey] };
 	}
 
@@ -231,16 +226,10 @@ export class InsightsService {
 	 * when grouped by time.
 	 */
 	getAvailableDateRanges(): DateRange[] {
-		const maxHistoryInDays =
-			this.licenseState.getInsightsMaxHistory() === -1
-				? Number.MAX_SAFE_INTEGER
-				: this.licenseState.getInsightsMaxHistory();
-		const isHourlyDateLicensed = this.licenseState.isInsightsHourlyDataLicensed();
-
+		// Always allow all date ranges for self-hosted instances
 		return INSIGHTS_DATE_RANGE_KEYS.map((key) => ({
 			key,
-			licensed:
-				key === 'day' ? (isHourlyDateLicensed ?? false) : maxHistoryInDays >= keyRangeToDays[key],
+			licensed: true, // Always licensed for self-hosted
 			granularity: key === 'day' ? 'hour' : keyRangeToDays[key] <= 30 ? 'day' : 'week',
 		}));
 	}

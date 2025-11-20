@@ -70,8 +70,9 @@
 }
 
 .el-message-box {
-	background-color: var(--color-background-light);
+	background: var(--color-glass-container-80);
 	border: none;
+	backdrop-filter: blur(10px);
 	.el-message-box__headerbtn {
 		.el-message-box__close {
 			color: var(--color-text-dark);

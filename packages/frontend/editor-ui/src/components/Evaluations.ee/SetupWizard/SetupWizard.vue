@@ -27,18 +27,11 @@ const hasRuns = computed(() => {
 });
 
 const evaluationsAvailable = computed(() => {
-	return (
-		usageStore.workflowsWithEvaluationsLimit === -1 ||
-		usageStore.workflowsWithEvaluationsCount < usageStore.workflowsWithEvaluationsLimit
-	);
+	return true; // Always available for self-hosted
 });
 
 const evaluationsQuotaExceeded = computed(() => {
-	return (
-		usageStore.workflowsWithEvaluationsLimit !== -1 &&
-		usageStore.workflowsWithEvaluationsCount >= usageStore.workflowsWithEvaluationsLimit &&
-		!hasRuns.value
-	);
+	return false; // Never exceeded for self-hosted
 });
 
 const activeStepIndex = ref(0);

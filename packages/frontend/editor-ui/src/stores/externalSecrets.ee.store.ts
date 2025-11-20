@@ -20,7 +20,7 @@ export const useExternalSecretsStore = defineStore('externalSecrets', () => {
 	});
 
 	const isEnterpriseExternalSecretsEnabled = computed(
-		() => settingsStore.isEnterpriseFeatureEnabled[EnterpriseEditionFeature.ExternalSecrets],
+		() => true, // Always enabled for self-hosted
 	);
 
 	const secrets = computed(() => state.secrets);

@@ -6,24 +6,18 @@ import { SourceControlPreferencesService } from '../source-control-preferences.s
 
 export const sourceControlLicensedAndEnabledMiddleware: RequestHandler = (_req, res, next) => {
 	const sourceControlPreferencesService = Container.get(SourceControlPreferencesService);
-	if (sourceControlPreferencesService.isSourceControlLicensedAndEnabled()) {
+	// Only check if connected, skip license check for self-hosted
+	if (sourceControlPreferencesService.isSourceControlConnected()) {
 		next();
 	} else {
-		if (!sourceControlPreferencesService.isSourceControlConnected()) {
-			res.status(412).json({
-				status: 'error',
-				message: 'source_control_not_connected',
-			});
-		} else {
-			res.status(401).json({ status: 'error', message: 'Unauthorized' });
-		}
+		res.status(412).json({
+			status: 'error',
+			message: 'source_control_not_connected',
+		});
 	}
 };
 
 export const sourceControlLicensedMiddleware: RequestHandler = (_req, res, next) => {
-	if (isSourceControlLicensed()) {
-		next();
-	} else {
-		res.status(401).json({ status: 'error', message: 'Unauthorized' });
-	}
+	// Always allow source control for self-hosted
+	next();
 };

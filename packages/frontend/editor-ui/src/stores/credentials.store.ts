@@ -401,20 +401,20 @@ export const useCredentialsStore = defineStore(STORES.CREDENTIALS, () => {
 		sharedWithProjects: ProjectSharingData[];
 		credentialId: string;
 	}): Promise<ICredentialsResponse> => {
-		if (useSettingsStore().isEnterpriseFeatureEnabled[EnterpriseEditionFeature.Sharing]) {
-			await credentialsEeApi.setCredentialSharedWith(
-				useRootStore().restApiContext,
-				payload.credentialId,
-				{
-					shareWithIds: payload.sharedWithProjects.map((project) => project.id),
-				},
-			);
+		// Always allow credential sharing for self-hosted instances
+		await credentialsEeApi.setCredentialSharedWith(
+			useRootStore().restApiContext,
+			payload.credentialId,
+			{
+				shareWithIds: payload.sharedWithProjects.map((project) => project.id),
+			},
+		);
 
-			state.value.credentials[payload.credentialId] = {
-				...state.value.credentials[payload.credentialId],
-				sharedWithProjects: payload.sharedWithProjects,
-			};
-		}
+		state.value.credentials[payload.credentialId] = {
+			...state.value.credentials[payload.credentialId],
+			sharedWithProjects: payload.sharedWithProjects,
+		};
+
 		return state.value.credentials[payload.credentialId];
 	};
 

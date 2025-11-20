@@ -13,7 +13,7 @@ export const useSourceControlStore = defineStore('sourceControl', () => {
 	const settingsStore = useSettingsStore();
 
 	const isEnterpriseSourceControlEnabled = computed(
-		() => settingsStore.isEnterpriseFeatureEnabled[EnterpriseEditionFeature.SourceControl],
+		() => true, // Always enabled for self-hosted
 	);
 
 	const sshKeyTypes: SshKeyTypes = ['ed25519', 'rsa'];

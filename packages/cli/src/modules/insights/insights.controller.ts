@@ -50,7 +50,6 @@ export class InsightsController {
 
 	@Get('/by-workflow')
 	@GlobalScope('insights:list')
-	@Licensed('feat:insights:viewDashboard')
 	async getInsightsByWorkflow(
 		_req: AuthenticatedRequest,
 		_res: Response,
@@ -69,7 +68,6 @@ export class InsightsController {
 
 	@Get('/by-time')
 	@GlobalScope('insights:list')
-	@Licensed('feat:insights:viewDashboard')
 	async getInsightsByTime(
 		_req: AuthenticatedRequest,
 		_res: Response,

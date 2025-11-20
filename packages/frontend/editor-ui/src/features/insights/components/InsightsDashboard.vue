@@ -11,9 +11,6 @@ import InsightsDateRangeSelect from './InsightsDateRangeSelect.vue';
 import InsightsUpgradeModal from './InsightsUpgradeModal.vue';
 import { useDocumentTitle } from '@/composables/useDocumentTitle';
 
-const InsightsPaywall = defineAsyncComponent(
-	async () => await import('@/features/insights/components/InsightsPaywall.vue'),
-);
 const InsightsChartTotal = defineAsyncComponent(
 	async () => await import('@/features/insights/components/charts/InsightsChartTotal.vue'),
 );
@@ -153,10 +150,7 @@ onMounted(() => {
 				:class="$style.insightsBanner"
 			/>
 			<div :class="$style.insightsContent">
-				<div
-					v-if="insightsStore.isDashboardEnabled || isTimeSavedRoute"
-					:class="$style.insightsContentWrapper"
-				>
+				<div :class="$style.insightsContentWrapper">
 					<div
 						:class="[
 							$style.dataLoader,
@@ -182,12 +176,11 @@ onMounted(() => {
 							v-model:sort-by="sortTableBy"
 							:data="insightsStore.table.state"
 							:loading="insightsStore.table.isLoading"
-							:is-dashboard-enabled="insightsStore.isDashboardEnabled"
+							:is-dashboard-enabled="true"
 							@update:options="fetchPaginatedTableData"
 						/>
 					</div>
 				</div>
-				<InsightsPaywall v-else />
 			</div>
 		</div>
 	</div>

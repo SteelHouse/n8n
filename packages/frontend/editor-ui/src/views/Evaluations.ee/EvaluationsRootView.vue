@@ -32,7 +32,7 @@ const sourceControlStore = useSourceControlStore();
 const { initializeWorkspace } = useCanvasOperations();
 
 const evaluationsLicensed = computed(() => {
-	return usageStore.workflowsWithEvaluationsLimit !== 0;
+	return true; // Always enable evaluations for self-hosted
 });
 
 const isProtectedEnvironment = computed(() => {

@@ -48,7 +48,7 @@ const classes = computed(() => ({
 .card {
 	border-radius: var(--border-radius-large);
 	border: var(--border-base);
-	background-color: var(--color-background-xlight);
+	background: var(--color-glass-container-40);
 	padding: var(--card--padding, var(--spacing-s));
 	display: flex;
 	flex-direction: row;

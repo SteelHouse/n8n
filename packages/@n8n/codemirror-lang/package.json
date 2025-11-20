@@ -5,12 +5,12 @@
   "private": true,
   "sideEffects": false,
   "main": "dist/index.js",
-  "module": "src/index.ts",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "require": "./dist/index.js",
-      "import": "./src/index.ts",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./*": "./*"
@@ -27,10 +27,12 @@
     "format": "biome format --write src test",
     "format:check": "biome ci src test"
   },
+  "dependencies": {
+    "@lezer/lr": "^1.4.0"
+  },
   "peerDependencies": {
     "@codemirror/language": "*",
-    "@lezer/highlight": "*",
-    "@lezer/lr": "^1.4.0"
+    "@lezer/highlight": "*"
   },
   "devDependencies": {
     "@n8n/typescript-config": "workspace:*",

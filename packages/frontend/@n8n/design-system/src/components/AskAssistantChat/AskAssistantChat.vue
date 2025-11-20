@@ -512,7 +512,7 @@ defineExpose({
 
 .inputWrapper {
 	display: flex;
-	background-color: var(--color-foreground-xlight);
+	background: var(--color-glass-well);
 	border: var(--border-base);
 	width: 100%;
 	border-top: 0;
@@ -547,7 +547,7 @@ defineExpose({
 }
 
 textarea.disabled {
-	background-color: var(--color-foreground-base);
+	background: var(--color-glass-container-20);
 	cursor: not-allowed;
 }
 

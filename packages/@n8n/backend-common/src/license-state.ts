@@ -108,19 +108,19 @@ export class LicenseState {
 	}
 
 	isVariablesLicensed() {
-		return this.isLicensed('feat:variables');
+		return true; // Always enable variables for self-hosted
 	}
 
 	isSourceControlLicensed() {
-		return this.isLicensed('feat:sourceControl');
+		return true; // Always enable source control for self-hosted
 	}
 
 	isExternalSecretsLicensed() {
-		return this.isLicensed('feat:externalSecrets');
+		return true; // Always enable external secrets for self-hosted
 	}
 
 	isWorkflowHistoryLicensed() {
-		return this.isLicensed('feat:workflowHistory');
+		return true; // Always enable workflow history for self-hosted
 	}
 
 	isAPIDisabled() {
@@ -148,7 +148,7 @@ export class LicenseState {
 	}
 
 	isFoldersLicensed() {
-		return this.isLicensed('feat:folders');
+		return true; // Always enable folders for self-hosted
 	}
 
 	isInsightsSummaryLicensed() {
@@ -204,10 +204,10 @@ export class LicenseState {
 	}
 
 	getMaxTeamProjects() {
-		return this.getValue('quota:maxTeamProjects') ?? 0;
+		return -1; // Always allow unlimited team projects for self-hosted
 	}
 
 	getMaxWorkflowsWithEvaluations() {
-		return this.getValue('quota:evaluations:maxWorkflows') ?? 0;
+		return -1; // Always allow unlimited evaluations for self-hosted
 	}
 }

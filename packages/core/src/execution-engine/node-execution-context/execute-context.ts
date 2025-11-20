@@ -124,13 +124,20 @@ export class ExecuteContext extends BaseExecuteContext implements IExecuteFuncti
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			fallbackValue?: any,
 			options?: IGetNodeParameterOptions,
-		) =>
-			this._getNodeParameter(
-				parameterName,
-				itemIndex,
-				fallbackValue,
-				options,
-			)) as IExecuteFunctions['getNodeParameter'];
+		) => {
+			// Ensure we have the correct context and prevent binding issues in parallel execution
+			if (!this._getNodeParameter || typeof this._getNodeParameter !== 'function') {
+				throw new ApplicationError('ExecuteContext not properly initialized - getNodeParameter function missing', {
+					extra: { 
+						nodeName: this.node.name, 
+						nodeType: this.node.type,
+						hasGetNodeParameter: !!this._getNodeParameter,
+						typeOfGetNodeParameter: typeof this._getNodeParameter
+					}
+				});
+			}
+			return this._getNodeParameter.call(this, parameterName, itemIndex, fallbackValue, options);
+		}) as IExecuteFunctions['getNodeParameter'];
 	}
 
 	isStreaming(): boolean {

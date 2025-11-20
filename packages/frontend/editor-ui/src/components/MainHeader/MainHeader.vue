@@ -4,16 +4,13 @@ import WorkflowDetails from '@/components/MainHeader/WorkflowDetails.vue';
 import { useI18n } from '@n8n/i18n';
 import { usePushConnection } from '@/composables/usePushConnection';
 import {
-	LOCAL_STORAGE_HIDE_GITHUB_STAR_BUTTON,
 	MAIN_HEADER_TABS,
 	PLACEHOLDER_EMPTY_WORKFLOW_ID,
 	STICKY_NODE_TYPE,
 	VIEWS,
-	N8N_MAIN_GITHUB_REPO_URL,
 } from '@/constants';
 import { useExecutionsStore } from '@/stores/executions.store';
 import { useNDVStore } from '@/stores/ndv.store';
-import { useSettingsStore } from '@/stores/settings.store';
 import { useSourceControlStore } from '@/stores/sourceControl.store';
 import { useUIStore } from '@/stores/ui.store';
 import { useWorkflowsStore } from '@/stores/workflows.store';
@@ -21,8 +18,6 @@ import { computed, onBeforeMount, onBeforeUnmount, onMounted, ref, watch } from 
 import type { RouteLocation, RouteLocationRaw } from 'vue-router';
 import { useRoute, useRouter } from 'vue-router';
 
-import { useLocalStorage } from '@vueuse/core';
-import GithubButton from 'vue-github-button';
 import type { FolderShortInfo } from '@/Interface';
 
 const router = useRouter();
@@ -34,13 +29,11 @@ const uiStore = useUIStore();
 const sourceControlStore = useSourceControlStore();
 const workflowsStore = useWorkflowsStore();
 const executionsStore = useExecutionsStore();
-const settingsStore = useSettingsStore();
 
 const activeHeaderTab = ref(MAIN_HEADER_TABS.WORKFLOW);
 const workflowToReturnTo = ref('');
 const executionToReturnTo = ref('');
 const dirtyState = ref(false);
-const githubButtonHidden = useLocalStorage(LOCAL_STORAGE_HIDE_GITHUB_STAR_BUTTON, false);
 
 // Track the routes that are used for the tabs
 // This is used to determine which tab to show when the route changes
@@ -73,19 +66,7 @@ const workflowId = computed(() =>
 );
 const onWorkflowPage = computed(() => !!(route.meta.nodeView || route.meta.keepWorkflowAlive));
 const readOnly = computed(() => sourceControlStore.preferences.branchReadOnly);
-const isEnterprise = computed(
-	() => settingsStore.isQueueModeEnabled && settingsStore.isWorkerViewAvailable,
-);
-const isTelemetryEnabled = computed((): boolean => {
-	return settingsStore.isTelemetryEnabled;
-});
-const showGitHubButton = computed(
-	() =>
-		!isEnterprise.value &&
-		!settingsStore.settings.inE2ETests &&
-		!githubButtonHidden.value &&
-		isTelemetryEnabled.value,
-);
+
 
 const parentFolderForBreadcrumbs = computed<FolderShortInfo | undefined>(() => {
 	if (!workflow.value.parentFolder) {
@@ -240,9 +221,7 @@ async function navigateToEvaluationsView(openInNewTab: boolean) {
 	}
 }
 
-function hideGithubButton() {
-	githubButtonHidden.value = true;
-}
+
 </script>
 
 <template>
@@ -263,25 +242,6 @@ function hideGithubButton() {
 					:current-folder="parentFolderForBreadcrumbs"
 					:is-archived="workflow.isArchived"
 				/>
-				<div v-if="showGitHubButton" :class="[$style['github-button'], 'hidden-sm-and-down']">
-					<div :class="$style['github-button-container']">
-						<GithubButton
-							:href="N8N_MAIN_GITHUB_REPO_URL"
-							:data-color-scheme="uiStore.appliedTheme"
-							data-size="large"
-							data-show-count="true"
-							:aria-label="locale.baseText('editor.mainHeader.githubButton.label')"
-						>
-							{{ locale.baseText('generic.star') }}
-						</GithubButton>
-						<N8nIcon
-							:class="$style['close-github-button']"
-							icon="circle-x"
-							size="medium"
-							@click="hideGithubButton"
-						/>
-					</div>
-				</div>
 			</div>
 			<TabBar
 				v-if="onWorkflowPage"
@@ -303,7 +263,7 @@ function hideGithubButton() {
 
 .main-header {
 	min-height: var(--navbar--height);
-	background-color: var(--color-background-xlight);
+	background: var(--color-glass-container-20);
 	width: 100%;
 	box-sizing: border-box;
 	border-bottom: var(--border-width-base) var(--border-style-base) var(--color-foreground-base);
